@@ -1,9 +1,5 @@
 # Blood Donation Campaign Dashboard
 
-<a target="_blank" href="https://cookiecutter-data-science.drivendata.org/">
-    <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" />
-</a>
-
 This is a comprehensive dashboard, implemented in python for the visualization and analysis of blood donation campaign data. The dashboard will be used by campaign organizers for addressing key questions, helping them make data-driven decisions to improve the success of future blood donation campaigns.
 
 ## Project Organization
