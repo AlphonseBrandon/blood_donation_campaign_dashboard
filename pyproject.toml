@@ -1,0 +1,32 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "blood_donation_campaign_dashboard"
+version = "0.0.1"
+description = "This is a comprehensive dashboard, implemented in python for the visualization and analysis of blood donation campaign data. The dashboard will be used by campaign organizers for addressing key questions, helping them make data-driven decisions to improve the success of future blood donation campaigns."
+authors = [
+  { name = "ABO Team" },
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License"
+]
+requires-python = "~=3.12"
+
+[tool.black]
+line-length = 99
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.venv
+)/
+'''
+
+[tool.ruff.lint.isort]
+known_first_party = ["blood_donation_campaign_dashboard"]
+force_sort_within_sections = true
