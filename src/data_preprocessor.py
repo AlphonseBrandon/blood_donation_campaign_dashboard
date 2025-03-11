@@ -2,7 +2,7 @@ import pandas as pd
 from pathlib import Path
 import logging
 from typing import Dict
-from data_loader import BloodDonationDataLoader
+from src.data_loader import BloodDonationDataLoader
 
 # File: src/data_preprocessor.py
 
