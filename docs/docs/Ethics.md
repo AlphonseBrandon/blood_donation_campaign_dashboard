@@ -91,7 +91,23 @@ Blood donation is a critical resource for healthcare, but *donor eligibility is 
 ---
 ## References  
 - World Health Organization. (2012). Blood donor selection: Guidelines on assessing donor suitability for blood donation. WHO.  
-- World Health Organization. (n.d.). WHO guidelines on blood transfusion safety. 
-- American Red Cross. (n.d.). Blood donation eligibility requirements. 
-- AABB. (n.d.). Standards for blood collection. American Association of Blood Banks.
-- National Health Service. (n.d.). Blood donation guidelines.
+- World Health Organization. (n.d.). WHO guidelines on blood transfusion safety. Retrieved from [https://www.who.int/publications/i/item/9789241595411](https://www.who.int/publications/i/item/9789241595411)  
+- American Red Cross. (n.d.). Blood donation eligibility requirements. Retrieved from [https://www.redcrossblood.org/donate-blood/how-to-donate/eligibility-requirements.html](https://www.redcrossblood.org/donate-blood/how-to-donate/eligibility-requirements.html)  
+- AABB. (n.d.). Standards for blood collection. American Association of Blood Banks. Retrieved from [https://www.aabb.org/](https://www.aabb.org/)  
+- National Health Service. (n.d.). Blood donation guidelines. Retrieved from [https://www.nhs.uk/blood-donation/](https://www.nhs.uk/blood-donation/)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
