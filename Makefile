@@ -23,10 +23,10 @@ install: venv  ## Install requirements
 	$(PIP) install -r requirements.txt
 	@echo "Packages installed successfully"
 
-##@ Data Ingestion
+##@ Data Management
 
 data-dirs:  ## Create data directories
-	@mkdir -p $(DATA_DIR)
+	@mkdir -p $(DATA_DIR) data/processed
 	@echo "Created data directory structure"
 
 check-data: data-dirs  ## Verify raw data exists
@@ -37,10 +37,17 @@ check-data: data-dirs  ## Verify raw data exists
 	fi
 	@echo "Data file verification successful"
 
-ingest: check-data  ## Load data into system
+##@ Data Pipeline
+
+ingest: check-data  ## Load raw data into system
 	@echo "Starting data ingestion..."
 	$(PYTHON) src/data_loader.py
 	@echo "Data loading completed successfully"
+
+preprocess: ingest  ## Preprocess raw data
+	@echo "Starting data preprocessing..."
+	$(PYTHON) src/data_preprocessor.py
+	@echo "Data preprocessing completed successfully"
 
 ##@ Project Management
 
@@ -48,5 +55,7 @@ clean:  ## Clean project artifacts
 	rm -rf $(VENV)
 	find . -type d -name '__pycache__' -exec rm -rf {} +
 	find . -type f -name '*.pyc' -delete
+	rm -rf data/processed/*.xlsx
+	@echo "Cleaned all project artifacts"
 
-.PHONY: help venv install data-dirs check-data ingest clean
+.PHONY: help venv install data-dirs check-data ingest preprocess clean
