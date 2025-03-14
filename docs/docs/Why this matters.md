@@ -70,6 +70,6 @@ By improving *donor outreach, retention, and coordination*, this dashboard helps
 This system is built *not just to collect blood, but to ensure that it gets where it is needed,faster and more efficiently*.  
 
 ---
-Blood donation is about more than collecting pints of blood, it is about *ensuring that every unit reaches the right patient at the right time. The *Blood Donation Campaign Dashboard* transforms the way blood donations are managed, making the process *more efficient, responsive, and life-saving*.  
+Blood donation is about more than collecting pints of blood, it is about ensuring that every unit reaches the right patient at the right time. The *Blood Donation Campaign Dashboard* transforms the way blood donations are managed, making the process *more efficient, responsive, and life-saving*.  
 
 By leveraging *data-driven decision-making and real-time coordination, this solution supports *hospitals, blood banks, and donors* in creating a more *reliable and sustainable blood donation system*.
