@@ -602,13 +602,13 @@ if df is not None:
         for field in relevant_fields:
             if sVoluntaire.sheet[field].dtype == 'object': # Assuming object type means categorical
                 unique_vals = [''] + list(sVoluntaire.get_group(field)) # Add empty string for default/optional input
-                user_input_data[field] = st.selectbox(f"Your {field.replace('_', ' ').title()}:", unique_vals)
+                user_input_data[field] = st.selectbox(f"{field.replace('_', ' ').title()}:", unique_vals)
             elif sVoluntaire.sheet[field].dtype in ['int64', 'float64']: # Numerical input
                 min_val = float(sVoluntaire.sheet[field].min())
                 max_val = float(sVoluntaire.sheet[field].max())
-                user_input_data[field] = st.number_input(f"Your {field.replace('_', ' ').title()}:", min_value=min_val, max_value=max_val, value=(min_val + max_val)/2.0) # Default to midpoint
+                user_input_data[field] = st.number_input(f"{field.replace('_', ' ').title()}:", min_value=min_val, max_value=max_val, value=(min_val + max_val)/2.0) # Default to midpoint
             else: # Text input as fallback
-                user_input_data[field] = st.text_input(f"Your {field.replace('_', ' ').title()}:", "")
+                user_input_data[field] = st.text_input(f"{field.replace('_', ' ').title()}:", "")
 
         if st.button("Predict Cluster"):
             with st.spinner('Predicting your cluster...'):
