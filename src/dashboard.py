@@ -5,6 +5,14 @@ import plotly.graph_objects as go
 from pathlib import Path
 import folium
 from streamlit_folium import st_folium
+import requests
+import json 
+from clustering_components import (
+perform_kmeans_clustering, 
+mine_cluster_information,
+clustering_data_sanitisation,
+)
+
 
 # Configuration
 DATA_PATH = Path("data/processed/processed.xlsx")
@@ -12,7 +20,7 @@ STREAMLIT_CONFIG = {
     "page_title": "Blood Donation Dashboard",
     "page_icon": "🩸",
     "layout": "wide"
-}
+}   
 
 @st.cache_data
 def load_data():
@@ -508,7 +516,7 @@ def create_donor_profiling_analysis(filtered_df):
     filtered_df['is_eligible'] = filtered_df["Statut_d'éligibilité"] == 1
     filtered_df['is_repeat_donor'] = filtered_df["A-t-il_(elle)_déjà_donné_le_sang"] == "Oui"
     
-    tab1, tab2 = st.tabs(["Ideal Donor Profile", "Demographic Success Patterns"])
+    tab1, tab2 , tab3 = st.tabs(["Ideal Donor Profile", "Clustering Insights",  "Demographic Success Patterns"])
 
     with tab1:
         col1, col2 = st.columns([2, 1])
@@ -591,6 +599,18 @@ def create_donor_profiling_analysis(filtered_df):
             st.plotly_chart(fig, use_container_width=True)
 
     with tab2:
+        # Clustering insights
+        sheet = clustering_data_sanitisation( filtered_df )
+        st.subheader("Clustering Insights")
+        col1, col2 = st.columns(2)
+        with col1:
+            perform_kmeans_clustering( sheet , show_plot=True)
+        with col2:
+            st.info("The value above each cluster bar represents the Pecentage of the dataset held by that cluster" )
+            mine_cluster_information(sheet)
+        
+
+    with tab3:
         # Demographic success patterns
         st.subheader("Success Patterns by Demographics")
         
@@ -792,6 +812,27 @@ def create_key_metrics(filtered_df):
     
     return metrics
 
+# --- Prediction Function  ---
+#@st.cache_data(show_spinner=False)
+def get_prediction(form_data):
+    """
+    Sends form data to the backend and returns the prediction.
+    This function is cached to avoid re-running the prediction logic.
+    """
+    try:
+        flask_app_url = "http://127.0.0.1:5000/predict"  
+        response = requests.post(flask_app_url, json=form_data)
+        response.raise_for_status()  
+        result = response.json()
+        return result
+    except requests.exceptions.RequestException as e:
+        return {"error": f"Error connecting to Flask app: {e}"}
+    except json.JSONDecodeError as e:
+        return {"error": f"Error decoding JSON response: {e}"}
+    except Exception as e:
+        return {"error": f"An unexpected error occurred: {e}"}
+
+
 def main():
     # Configure page settings
     st.set_page_config(**STREAMLIT_CONFIG)
@@ -820,7 +861,56 @@ def main():
     except Exception as e:
         st.error(f"Error filtering data: {str(e)}")
         filtered_df = df
+    
+    st.sidebar.markdown("---")
+    st.sidebar.header("Check Your Eligibility")
 
+    with st.sidebar.form("eligibility_form"):
+        age = st.number_input("Âge (ans)", min_value=0, max_value=120, value=30)
+        poids = st.number_input("Poids (kg)", min_value=0.0, max_value=300.0, value=70.0, step=0.1)
+        genre = st.selectbox("Genre", ["Homme", "Femme"])
+        taille = st.number_input("Taille (cm)", min_value=0, max_value=250, value=170)
+        chronic_diseases = st.radio("Avez-vous une maladie chronique ?", ["Oui", "Non"])
+        transmissible_diseases = st.radio("Avez-vous une maladie transmissible ?", ["Oui", "Non"])
+
+        submit_button = st.form_submit_button("Vérifier mon éligibilité")
+
+        # --- Prediction ---
+        if submit_button:
+            # form data
+            form_data = {
+                "age": age,
+                "poids": poids,
+                "genre": genre,
+                "taille": taille,
+                "chronic_diseases": chronic_diseases,
+                "transmissible_diseases": transmissible_diseases,
+            }
+
+            prediction_placeholder = st.empty()
+            with prediction_placeholder:
+                st.info("Please wait while we check your eligibility...")
+
+            result = get_prediction(form_data)
+
+            prediction_placeholder.empty()
+
+            # prediction results
+            if "error" in result:
+                st.error(f"Error: {result['error']}")
+            else:
+                probability = result["probability"]
+                if float ( probability ) >= 0.4:
+                    prediction = "1"
+                else:
+                    prediction = "0"
+
+                if prediction == "1":
+                    st.success(f"Félicitations ! Vous êtes éligible au don de sang. Probabilité d'éligibilité : {probability}")
+                else:
+                    st.error(f"Désolé, vous n'êtes pas éligible au don de sang. Probabilité d'éligibilité : {probability}")
+
+      
     # Main dashboard layout
     st.title("Blood Donation Campaign Analytics")
     
