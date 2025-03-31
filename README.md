@@ -137,6 +137,59 @@ This project follows PEP 8 guidelines. To check code style:
 flake8 src/
 ``` 
 
+
+### 📂 Directory Details
+
+- **`data/`**: Stores all project data files
+  - `raw/`: Original, immutable data
+  - `processed/`: Clean, analysis-ready data
+  - `interim/`: Intermediate processing steps
+  - `external/`: Data from third-party sources
+
+- **`src/`**: Core source code
+  - `app.py`: Main Streamlit dashboard application
+  - `data_loader.py`: Data loading utilities
+  - `data_preprocessor.py`: Data preprocessing pipeline
+
+- **`notebooks/`**: Jupyter notebooks for analysis
+  - Data exploration
+  - Model development
+  - Visualization experiments
+
+- **`models/`**: Trained models and artifacts
+  - Random Forest models
+  - Model preprocessing objects
+  - Training data snapshots
+
+- **`tests/`**: Unit tests and test data
+  - Test coverage for core functionality
+  - Integration tests
+  - Test fixtures
+
+- **`docs/`**: Project documentation
+  - Technical specifications
+  - API documentation
+  - Usage guides
+
+### 🔧 Configuration Files
+
+- `pyproject.toml`: Project metadata and build configuration
+- `requirements.txt`: Python package dependencies
+- `Makefile`: Build automation and development tasks
+- `.env`: Environment variables (not in version control)
+- `setup.cfg`: Tool-specific configurations
+
+
+### 🔧 Configuration Files
+
+- `pyproject.toml`: Project metadata and build configuration
+- `requirements.txt`: Python package dependencies
+- `Makefile`: Build automation and development tasks
+- `.env`: Environment variables (not in version control)
+- `setup.cfg`: Tool-specific configurations
+
+Add this section to your README.md to provide a clear overview of the project's organization and structure.
+
 ### 🤝 Contributing
 Contributions are welcome! Please read our Contributing Guidelines for details on how to submit pull requests, report issues, and contribute to the project.
 
