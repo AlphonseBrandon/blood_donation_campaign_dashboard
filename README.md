@@ -44,54 +44,47 @@ The Blood Donation Campaign Dashboard addresses critical challenges in blood don
   - Engagement pattern analysis
   - Retention rate visualization
 
-
 ### 📊 Dashboard Preview
 
 ### Geographic Distribution
 
-    - Regional donor mapping
-    - Population density analysis
-    - Location-based metrics
+- Regional donor mapping
+- Population density analysis
+- Location-based metrics
 
-### Top 10 quaters in sub- division, in (this case Douala 5)
-![Top 10 quaters in subdivision, in (this case Douala 5)](../blood_donation_campaign_dashboard/reports/figures/geagraphic_distribution.png)
+### Top 10 quaters in sub-division, in (this case Douala 5)
+![Top 10 quaters in subdivision, in (this case Douala 5)](reports/figures/geagraphic_distribution.png)
 
 ### Top 10 sub-divisions in region, in (this case Littoral)
-![Top 10 sub-divisions in region, in (this case Littoral)](../blood_donation_campaign_dashboard/reports/figures/top_10_subdivision.png)
+![Top 10 sub-divisions in region, in (this case Littoral)](reports/figures/top_10_subdivision.png)
 
 ### Donor Profiling
 
-    - Demographic analysis
-    - Health condition impact
-    - Retention patterns
-    - Medical factor impact
+- Demographic analysis
+- Health condition impact
+- Retention patterns
+- Medical factor impact
 
 ### Demographic Distribution By Age & Gender
-
-![### Demographic Distribution By Age & Gender](../blood_donation_campaign_dashboard/reports/figures/age_gender.png)
+![Demographic Distribution By Age & Gender](reports/figures/age_gender.png)
 
 ### Demographic Distribution By Profession & Educational Level and BMI Category
-
-![### Demographic Distribution By Profession & Educational Level and BMI Category](../blood_donation_campaign_dashboard/reports/figures/professional_educational_bmi.png)
+![Demographic Distribution By Profession & Educational Level and BMI Category](reports/figures/professional_educational_bmi.png)
 
 ### Health condition impact analysis
-
-![### Health condition impact analysis](../blood_donation_campaign_dashboard/reports/figures/health_impact.png)
+![Health condition impact analysis](reports/figures/health_impact.png)
 
 ### Health Condition Summary
-
-![### Health Condition Summary](../blood_donation_campaign_dashboard/reports/figures/health_summary.png)
-
+![Health Condition Summary](reports/figures/health_summary.png)
 
 ### Campaign Analytics
 
-    - Temporal trends
-    - Success metrics
-    - Demographic contributions
+- Temporal trends
+- Success metrics
+- Demographic contributions
 
 ### Demographic Contribution Metrics
-
-![Demographic Contribution Metrics](../blood_donation_campaign_dashboard/reports/figures/demographic_contribution.png)
+![Demographic Contribution Metrics](reports/figures/demographic_contribution.png)
 
 ## 🚀 Getting Started
 
