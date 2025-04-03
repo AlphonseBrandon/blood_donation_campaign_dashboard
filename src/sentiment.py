@@ -20,7 +20,7 @@ print('cwd is >> ', cwd)
 
 # Configuration
 CONFIG = {
-    'data_path': os.path.join(cwd , 'challenge.xlsx (Converted - 2025-03-11 08_28).xlsx'),
+    'data_path': "../blood_donation_campaign_dashboard/data/raw/blood_donation_data.xlsx",
     'output_dir': os.path.join(cwd , 'output'),
     'plot_format': 'png',
     'date_column': 'Date',  # Update with actual date column name that u want to process

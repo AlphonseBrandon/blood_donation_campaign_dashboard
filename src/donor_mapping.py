@@ -17,7 +17,7 @@ from geopy.geocoders import Nominatim  # For geocoding
 import time  # For pausing
 
 # Load the Volontaire dataset
-challenge_dataset_path = '/content/Challenge dataset.xlsx'  # Path to the Excel file
+challenge_dataset_path = '../blood_donation_campaign_dashboard/data/raw/blood_donation_data.xlsx'  # Path to the Excel file
 df_volontaire = pd.read_excel(challenge_dataset_path, sheet_name='Volontaire')
 
 # Clean the Volontaire dataset
@@ -82,7 +82,7 @@ plt.ylabel('Number of Donors')  # y-axis label
 plt.show()  # Display the plot
 
 # Load the Cameroon map shapefile
-cameroon_map = gpd.read_file('/content/cmr_cities.zip')
+cameroon_map = gpd.read_file('../blood_donation_campaign_dashboard/data/processed/cmr_cities.zip')
 
 # Create a GeoDataFrame for donors based on their coordinates
 donors_geo = gpd.GeoDataFrame(df_volontaire, geometry=gpd.points_from_xy(df_volontaire.Longitude, df_volontaire.Latitude))
