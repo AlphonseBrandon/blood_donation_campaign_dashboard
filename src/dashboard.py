@@ -1,6 +1,10 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+<<<<<<< HEAD
+=======
+
+>>>>>>> 09a482a7acb3b51079d9c2808cfac672e9bb3a45
 import plotly.graph_objects as go
 from pathlib import Path
 import requests
@@ -30,7 +34,7 @@ STREAMLIT_CONFIG = {
     "page_title": "Blood Donation Dashboard",
     "page_icon": "🩸",
     "layout": "wide"
-}
+}   
 
 @st.cache_data
 def load_data():
