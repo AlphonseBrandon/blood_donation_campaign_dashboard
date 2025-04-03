@@ -123,25 +123,84 @@ def get_coordinates(filtered_df):
         )
     
     return filtered_df
+
+@st.cache_data
+def get_cached_coordinates():
+    """Cache coordinates for known locations"""
+    return {
+        "YAOUNDE": (3.848, 11.5021),
+        "DOUALA": (4.0511, 9.7679),
+        "R A S": (3.848, 11.5021),
+        "DOUALA 1": (4.0511, 9.7679),
+        "DOUALA 2": (4.0461, 9.7085),
+        "DOUALA 3": (4.0531, 9.7701),
+        "DOUALA 4": (4.0492, 9.7654),
+        "DOUALA 5": (4.0972, 9.7424),
+        "DOUALA 6": (4.0517, 9.7679),
+        # Add more known coordinates
+    }
+
+@st.cache_data
+def generate_location_coordinates(_df):
+    """Generate and cache coordinates for all locations"""
+    if 'Latitude' in _df.columns and 'Longitude' in _df.columns:
+        return _df
+    
+    default_coords = get_cached_coordinates()
+    coordinates = {}
+    
+    # Initialize Nominatim geocoder
+    geolocator = Nominatim(
+        user_agent="blood_donation_dashboard",
+        timeout=5
+    )
+    
+    # Get unique locations
+    unique_locations = _df['Arrondissement_de_résidence'].unique()
+    
+    for location in unique_locations:
+        try:
+            # Check cached coordinates first
+            if location.upper() in default_coords:
+                coordinates[location] = default_coords[location.upper()]
+                continue
+            
+            # Try geocoding
+            loc = geolocator.geocode(f"{location}, Cameroon")
+            if loc:
+                coordinates[location] = (loc.latitude, loc.longitude)
+            else:
+                coordinates[location] = default_coords["YAOUNDE"]
+            time.sleep(1)
+        except Exception:
+            coordinates[location] = default_coords["YAOUNDE"]
+    
+    # Add coordinates to DataFrame copy
+    df_with_coords = _df.copy()
+    df_with_coords['Latitude'] = df_with_coords['Arrondissement_de_résidence'].map(
+        lambda x: coordinates.get(x, default_coords["YAOUNDE"])[0]
+    )
+    df_with_coords['Longitude'] = df_with_coords['Arrondissement_de_résidence'].map(
+        lambda x: coordinates.get(x, default_coords["YAOUNDE"])[1]
+    )
+    
+    return df_with_coords
+    
 def create_geographic_analysis(filtered_df):
     """Create geographic distribution visualizations"""
     st.header("Geographic Distribution")
     
-    # Create tabs for different views
+    # Get cached coordinates
+    df_with_coords = generate_location_coordinates(filtered_df)
+    
     tab1, tab2, tab3 = st.tabs(["Interactive Map", "Arrondissements", "Quartier Analysis"])
     
     with tab1:
         try:
-            # Get coordinates for locations
-            df_with_coords = get_coordinates(filtered_df)
-            
-            # Create Folium map
+            # Create Folium map using cached coordinates
             m = folium.Map(location=[3.848, 11.5021], zoom_start=6)
-            
-            # Add cluster marker group
             marker_cluster = folium.plugins.MarkerCluster().add_to(m)
             
-            # Add donor locations to the map
             for idx, row in df_with_coords.iterrows():
                 if pd.notna(row['Latitude']) and pd.notna(row['Longitude']):
                     folium.CircleMarker(
@@ -158,10 +217,7 @@ def create_geographic_analysis(filtered_df):
                         """
                     ).add_to(marker_cluster)
             
-            # Add layer control
             folium.LayerControl().add_to(m)
-            
-            # Display map in Streamlit
             st_folium(m, width=None, height=500)
             
         except Exception as e:
