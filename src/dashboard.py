@@ -135,24 +135,6 @@ def create_geographic_analysis(filtered_df):
             # Get coordinates for locations
             df_with_coords = get_coordinates(filtered_df)
             
-            # Verify coordinates exist
-            if df_with_coords['Latitude'].isna().all() or df_with_coords['Longitude'].isna().all():
-                st.error("No valid coordinates available for mapping")
-                return
-            
-            # Load Cameroon map
-            cameroon_map = gpd.read_file('data/processed/cmr_cities.zip')
-            
-            # Create GeoDataFrame for donors
-            donors_geo = gpd.GeoDataFrame(
-                df_with_coords,
-                geometry=gpd.points_from_xy(
-                    df_with_coords.Longitude, 
-                    df_with_coords.Latitude
-                ),
-                crs=cameroon_map.crs
-            )
-            
             # Create Folium map
             m = folium.Map(location=[3.848, 11.5021], zoom_start=6)
             
@@ -160,7 +142,7 @@ def create_geographic_analysis(filtered_df):
             marker_cluster = folium.plugins.MarkerCluster().add_to(m)
             
             # Add donor locations to the map
-            for idx, row in donors_geo.iterrows():
+            for idx, row in df_with_coords.iterrows():
                 if pd.notna(row['Latitude']) and pd.notna(row['Longitude']):
                     folium.CircleMarker(
                         location=(row['Latitude'], row['Longitude']),
@@ -185,6 +167,119 @@ def create_geographic_analysis(filtered_df):
         except Exception as e:
             st.error(f"Error creating map: {str(e)}")
             st.info("Please ensure geographic data is available in the dataset")
+
+    with tab2:
+        st.subheader("Arrondissement Distribution")
+        
+        # Analyze arrondissement distribution
+        arrond_counts = filtered_df['Arrondissement_de_résidence'].value_counts()
+        
+        # Create visualization
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Top 10 arrondissements bar chart
+            fig = px.bar(
+                x=arrond_counts.head(10).index,
+                y=arrond_counts.head(10).values,
+                title="Top 10 Arrondissements by Donor Count",
+                labels={"x": "Arrondissement", "y": "Number of Donors"},
+                color=arrond_counts.head(10).values,
+                color_continuous_scale="Viridis"
+            )
+            fig.update_layout(xaxis_tickangle=-45)
+            st.plotly_chart(fig, use_container_width=True)
+        
+        with col2:
+            # Display metrics
+            total_arronds = len(arrond_counts)
+            total_donors = len(filtered_df)
+            avg_donors = total_donors / total_arronds if total_arronds > 0 else 0
+            
+            st.metric(
+                "Total Arrondissements",
+                f"{total_arronds:,}",
+                f"Avg {avg_donors:.1f} donors per area"
+            )
+            
+            st.metric(
+                "Most Active Area",
+                arrond_counts.index[0],
+                f"{arrond_counts.iloc[0]:,} donors"
+            )
+            
+            st.metric(
+                "Coverage Rate",
+                f"{(total_arronds/len(filtered_df.Arrondissement_de_résidence.unique())*100):.1f}%",
+                "of total areas"
+            )
+
+    with tab3:
+        st.subheader("Quartier Analysis")
+        
+        # Allow user to select arrondissement
+        selected_arrond = st.selectbox(
+            "Select Arrondissement",
+            options=sorted(filtered_df['Arrondissement_de_résidence'].unique())
+        )
+        
+        # Filter for selected arrondissement
+        arrond_df = filtered_df[filtered_df['Arrondissement_de_résidence'] == selected_arrond]
+        
+        # Analyze quartiers
+        quartier_counts = arrond_df['Quartier_de_Résidence'].value_counts()
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Quartier distribution visualization
+            fig = px.bar(
+                x=quartier_counts.head(10).index,
+                y=quartier_counts.head(10).values,
+                title=f"Top 10 Quartiers in {selected_arrond}",
+                labels={"x": "Quartier", "y": "Number of Donors"},
+                color=quartier_counts.head(10).values,
+                color_continuous_scale="Viridis"
+            )
+            fig.update_layout(xaxis_tickangle=-45)
+            st.plotly_chart(fig, use_container_width=True)
+        
+        with col2:
+            # Quartier metrics
+            st.metric(
+                "Total Quartiers",
+                len(quartier_counts),
+                f"{len(arrond_df)} total donors"
+            )
+            
+            st.metric(
+                "Most Active Quartier",
+                quartier_counts.index[0],
+                f"{quartier_counts.iloc[0]} donors"
+            )
+            
+            # Detailed quartier table
+            st.dataframe(
+                pd.DataFrame({
+                    "Quartier": quartier_counts.index,
+                    "Donors": quartier_counts.values,
+                    "Percentage": (quartier_counts.values / len(arrond_df) * 100).round(1)
+                }).head(10),
+                column_config={
+                    "Quartier": "Quartier Name",
+                    "Donors": st.column_config.NumberColumn(
+                        "Number of Donors",
+                        help="Total donors from this quartier"
+                    ),
+                    "Percentage": st.column_config.NumberColumn(
+                        "% of Arrondissement",
+                        help="Percentage of donors in the arrondissement",
+                        format="%.1f%%"
+                    )
+                },
+                hide_index=True,
+                use_container_width=True
+            )
 def create_health_conditions_analysis(filtered_df):
     """Analyze and visualize the impact of health conditions on eligibility"""
     st.header("Health Conditions Impact")
