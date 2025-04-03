@@ -1,11 +1,8 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-import folium
-from streamlit_folium import st_folium
-import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 from pathlib import Path
-import geopandas as gpd
 import requests
 import json
 from fuzzywuzzy import fuzz, process
@@ -17,6 +14,15 @@ from clustering_components import (
     mine_cluster_information,
     clustering_data_sanitisation,
 )
+import geopandas as gpd
+from geopy.geocoders import Nominatim 
+import folium
+from folium.plugins import MarkerCluster
+from streamlit_folium import st_folium
+import time
+from tenacity import retry, stop_after_attempt, wait_exponential
+from typing import Dict, Tuple
+
 
 # Configuration
 DATA_PATH = Path("data/processed/processed.xlsx")
@@ -26,98 +32,314 @@ STREAMLIT_CONFIG = {
     "layout": "wide"
 }
 
-# Function Definitions
-# Load challenge dataset correctly
-def load_challenge_data():
-    """Load and cache challenge data from the 'Volontaire' sheet."""
-    challenge_path = Path("data/Challenge dataset.xlsx")
-    return pd.read_excel(challenge_path, sheet_name="Volontaire")
+@st.cache_data
+def load_data():
+    """Load and cache processed data"""
+    df = pd.read_excel(DATA_PATH, sheet_name="Volontaire")
+    print(df.head())  # Verify data loading
+    return df
 
-def standardize_name(name):
-    return unidecode.unidecode(name.lower().strip()) if pd.notna(name) else name
+def get_default_coordinates() -> Dict[str, Tuple[float, float]]:
+    """Cached dictionary of known locations and their coordinates"""
+    return {
+        "YAOUNDE": (3.848, 11.5021),
+        "DOUALA": (4.0511, 9.7679),
+        "R A S": (3.848, 11.5021),  # Default to Yaounde if unknown
+        # Add more known locations as needed
+    }
 
-def fuzzy_match_arrondissement(arrondissement, map_arrondissements):
-    match = process.extractOne(arrondissement, map_arrondissements, scorer=fuzz.token_sort_ratio)
-    return match[0] if match and match[1] >= 80 else arrondissement
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=4, max=10),
+    reraise=True
+)
+def geocode_with_retry(location: str, geolocator) -> Tuple[float, float]:
+    """Geocode location with retry mechanism"""
+    try:
+        loc = geolocator.geocode(f"{location}, Cameroon", timeout=5)
+        if loc:
+            return (loc.latitude, loc.longitude)
+    except Exception as e:
+        st.warning(f"Retrying geocoding for {location}...")
+        raise e
+    return None
 
-def geocode_arrondissements(df):
-    """Geocode arrondissements to get their coordinates."""
-    geolocator = Nominatim(user_agent="myGeocoder")
-    arrondissement_coords = {}
-    for town in df['Arrondissement_Matched'].unique():
+def get_coordinates(filtered_df):
+    """Get or generate coordinates for locations with improved error handling"""
+    if 'Latitude' not in filtered_df.columns or 'Longitude' not in filtered_df.columns:
+        # Get default coordinates
+        default_coords = get_default_coordinates()
+        
+        # Initialize Nominatim geocoder
+        geolocator = Nominatim(
+            user_agent="blood_donation_dashboard",
+            timeout=5
+        )
+        
+        # Get unique arrondissements
+        unique_locations = filtered_df['Arrondissement_de_résidence'].unique()
+        failed_locations = []
+        
+        # Create coordinates dictionary
+        coordinates = {}
+        
+        with st.spinner('Generating coordinates for locations...'):
+            progress_bar = st.progress(0)
+            total_locations = len(unique_locations)
+            
+            for i, location in enumerate(unique_locations):
+                # Update progress silently
+                progress = (i + 1) / total_locations
+                progress_bar.progress(progress)
+                
+                try:
+                    # Check default coordinates first
+                    if location.upper() in default_coords:
+                        coordinates[location] = default_coords[location.upper()]
+                        continue
+                    
+                    # Try geocoding with retry
+                    result = geocode_with_retry(location, geolocator)
+                    if result:
+                        coordinates[location] = result
+                    else:
+                        failed_locations.append(location)
+                        coordinates[location] = default_coords["YAOUNDE"]
+                    
+                    time.sleep(1)  # Rate limiting
+                    
+                except Exception:
+                    failed_locations.append(location)
+                    coordinates[location] = default_coords["YAOUNDE"]
+            
+            progress_bar.empty()
+            
+            # Show summary of failures at the end
+            if failed_locations:
+                st.info(f"Used default coordinates for {len(failed_locations)} locations")
+        
+        # Add coordinates to DataFrame
+        filtered_df['Latitude'] = filtered_df['Arrondissement_de_résidence'].map(
+            lambda x: coordinates.get(x, default_coords["YAOUNDE"])[0]
+        )
+        filtered_df['Longitude'] = filtered_df['Arrondissement_de_résidence'].map(
+            lambda x: coordinates.get(x, default_coords["YAOUNDE"])[1]
+        )
+    
+    return filtered_df
+
+@st.cache_data
+def get_cached_coordinates():
+    """Cache coordinates for known locations"""
+    return {
+        "YAOUNDE": (3.848, 11.5021),
+        "DOUALA": (4.0511, 9.7679),
+        "R A S": (3.848, 11.5021),
+        "DOUALA 1": (4.0511, 9.7679),
+        "DOUALA 2": (4.0461, 9.7085),
+        "DOUALA 3": (4.0531, 9.7701),
+        "DOUALA 4": (4.0492, 9.7654),
+        "DOUALA 5": (4.0972, 9.7424),
+        "DOUALA 6": (4.0517, 9.7679),
+        # Add more known coordinates
+    }
+
+@st.cache_data
+def generate_location_coordinates(_df):
+    """Generate and cache coordinates for all locations"""
+    if 'Latitude' in _df.columns and 'Longitude' in _df.columns:
+        return _df
+    
+    default_coords = get_cached_coordinates()
+    coordinates = {}
+    
+    # Initialize Nominatim geocoder
+    geolocator = Nominatim(
+        user_agent="blood_donation_dashboard",
+        timeout=5
+    )
+    
+    # Get unique locations
+    unique_locations = _df['Arrondissement_de_résidence'].unique()
+    
+    for location in unique_locations:
         try:
-            location = geolocator.geocode(f"{town}, Cameroon", timeout=10)
-            if location:
-                arrondissement_coords[town] = (location.latitude, location.longitude)
+            # Check cached coordinates first
+            if location.upper() in default_coords:
+                coordinates[location] = default_coords[location.upper()]
+                continue
+            
+            # Try geocoding
+            loc = geolocator.geocode(f"{location}, Cameroon")
+            if loc:
+                coordinates[location] = (loc.latitude, loc.longitude)
+            else:
+                coordinates[location] = default_coords["YAOUNDE"]
             time.sleep(1)
-        except Exception as e:
-            print(f"Geocoding error for {town}: {e}")
-            time.sleep(5)
-
-    return pd.DataFrame.from_dict(arrondissement_coords, orient='index', columns=['Latitude', 'Longitude']).reset_index().rename(columns={'index': 'Arrondissement'})
-
-def plot_static_map(cameroon_map, map_geo):
-    """Plot the static map with donor locations."""
-    fig, ax = plt.subplots(figsize=(12, 10))
-    cameroon_map.plot(ax=ax, color='lightgrey', edgecolor='black')
-    map_geo.plot(ax=ax, marker='o', color='red', markersize=5, label='Donors')
-    plt.title('Geographical Distribution of Blood Donors in Cameroon')
-    plt.legend()
-    st.pyplot(fig)
-
-def plot_interactive_map(challenge_df):
-    """Create an interactive map with donor locations."""
-    m = folium.Map(location=[3.848, 11.5021], zoom_start=6)
-    for idx, row in challenge_df.iterrows():
-        folium.CircleMarker(
-            location=(row['Latitude'], row['Longitude']),
-            radius=5,
-            color='blue',
-            fill=True,
-            fill_color='blue',
-            fill_opacity=0.6,
-            popup=f"Arrondissement: {row['Arrondissement_Matched']}<br>Quartier: {row['Quartier_de_Résidence_']}"
-        ).add_to(m)
-    return m
-
-# Analysis Functions
+        except Exception:
+            coordinates[location] = default_coords["YAOUNDE"]
+    
+    # Add coordinates to DataFrame copy
+    df_with_coords = _df.copy()
+    df_with_coords['Latitude'] = df_with_coords['Arrondissement_de_résidence'].map(
+        lambda x: coordinates.get(x, default_coords["YAOUNDE"])[0]
+    )
+    df_with_coords['Longitude'] = df_with_coords['Arrondissement_de_résidence'].map(
+        lambda x: coordinates.get(x, default_coords["YAOUNDE"])[1]
+    )
+    
+    return df_with_coords
+    
 def create_geographic_analysis(filtered_df):
     """Create geographic distribution visualizations"""
     st.header("Geographic Distribution")
-    geo_df = filtered_df.copy()
-    arrond_counts = geo_df["Arrondissement_de_résidence"].value_counts()
-    top_10_arrond = arrond_counts.head(10)
-
-    arrond_df = pd.DataFrame({
-        "Arrondissement": top_10_arrond.index,
-        "Donors": top_10_arrond.values,
-        "Percentage": (top_10_arrond.values / len(geo_df) * 100).round(1)
-    })
-
-    total_donors = top_10_arrond.sum()
-    total_percentage = (total_donors / len(geo_df) * 100).round(1)
-
-    tab2, tab1 = st.tabs(["Quartier Analysis", "Top 10 Arrondissements"])
+    
+    # Get cached coordinates
+    df_with_coords = generate_location_coordinates(filtered_df)
+    
+    tab1, tab2, tab3 = st.tabs(["Interactive Map", "Arrondissements", "Quartier Analysis"])
+    
     with tab1:
-        st.dataframe(arrond_df)
+        try:
+            # Create Folium map using cached coordinates
+            m = folium.Map(location=[3.848, 11.5021], zoom_start=6)
+            marker_cluster = folium.plugins.MarkerCluster().add_to(m)
+            
+            for idx, row in df_with_coords.iterrows():
+                if pd.notna(row['Latitude']) and pd.notna(row['Longitude']):
+                    folium.CircleMarker(
+                        location=(row['Latitude'], row['Longitude']),
+                        radius=5,
+                        color='blue',
+                        fill=True,
+                        fill_color='blue',
+                        fill_opacity=0.6,
+                        popup=f"""
+                        <b>Arrondissement:</b> {row['Arrondissement_de_résidence']}<br>
+                        <b>Quartier:</b> {row['Quartier_de_Résidence']}<br>
+                        <b>Status:</b> {'Eligible' if row["Statut_d'éligibilité"] == 1 else 'Not Eligible'}
+                        """
+                    ).add_to(marker_cluster)
+            
+            folium.LayerControl().add_to(m)
+            st_folium(m, width=None, height=500)
+            
+        except Exception as e:
+            st.error(f"Error creating map: {str(e)}")
+            st.info("Please ensure geographic data is available in the dataset")
 
     with tab2:
-        selected_arrond = st.selectbox("Select Arrondissement to see Quartier distribution", options=top_10_arrond.index)
-        quartier_df = geo_df[geo_df["Arrondissement_de_résidence"] == selected_arrond]["Quartier_de_Résidence"].value_counts()
-        top_10_quartiers = quartier_df.head(10)
-        fig = px.bar(x=top_10_quartiers.index, y=top_10_quartiers.values, title=f"Top 10 Quartiers in {selected_arrond}")
-        st.plotly_chart(fig)
+        st.subheader("Arrondissement Distribution")
+        
+        # Analyze arrondissement distribution
+        arrond_counts = filtered_df['Arrondissement_de_résidence'].value_counts()
+        
+        # Create visualization
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Top 10 arrondissements bar chart
+            fig = px.bar(
+                x=arrond_counts.head(10).index,
+                y=arrond_counts.head(10).values,
+                title="Top 10 Arrondissements by Donor Count",
+                labels={"x": "Arrondissement", "y": "Number of Donors"},
+                color=arrond_counts.head(10).values,
+                color_continuous_scale="Viridis"
+            )
+            fig.update_layout(xaxis_tickangle=-45)
+            st.plotly_chart(fig, use_container_width=True)
+        
+        with col2:
+            # Display metrics
+            total_arronds = len(arrond_counts)
+            total_donors = len(filtered_df)
+            avg_donors = total_donors / total_arronds if total_arronds > 0 else 0
+            
+            st.metric(
+                "Total Arrondissements",
+                f"{total_arronds:,}",
+                f"Avg {avg_donors:.1f} donors per area"
+            )
+            
+            st.metric(
+                "Most Active Area",
+                arrond_counts.index[0],
+                f"{arrond_counts.iloc[0]:,} donors"
+            )
+            
+            st.metric(
+                "Coverage Rate",
+                f"{(total_arronds/len(filtered_df.Arrondissement_de_résidence.unique())*100):.1f}%",
+                "of total areas"
+            )
 
-    st.subheader("Geographic Distribution Summary")
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric("Top Arrondissement", top_10_arrond.index[0], f"{top_10_arrond.values[0]} donors")
-    with col2:
-        st.metric("Contribution", f"{total_percentage}%", f"of total {len(geo_df):,} donors")
-    with col3:
-        avg_donors = int(top_10_arrond.mean())
-        st.metric("Average Donors", f"{avg_donors:,}", "per top arrondissement")
-
+    with tab3:
+        st.subheader("Quartier Analysis")
+        
+        # Allow user to select arrondissement
+        selected_arrond = st.selectbox(
+            "Select Arrondissement",
+            options=sorted(filtered_df['Arrondissement_de_résidence'].unique())
+        )
+        
+        # Filter for selected arrondissement
+        arrond_df = filtered_df[filtered_df['Arrondissement_de_résidence'] == selected_arrond]
+        
+        # Analyze quartiers
+        quartier_counts = arrond_df['Quartier_de_Résidence'].value_counts()
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Quartier distribution visualization
+            fig = px.bar(
+                x=quartier_counts.head(10).index,
+                y=quartier_counts.head(10).values,
+                title=f"Top 10 Quartiers in {selected_arrond}",
+                labels={"x": "Quartier", "y": "Number of Donors"},
+                color=quartier_counts.head(10).values,
+                color_continuous_scale="Viridis"
+            )
+            fig.update_layout(xaxis_tickangle=-45)
+            st.plotly_chart(fig, use_container_width=True)
+        
+        with col2:
+            # Quartier metrics
+            st.metric(
+                "Total Quartiers",
+                len(quartier_counts),
+                f"{len(arrond_df)} total donors"
+            )
+            
+            st.metric(
+                "Most Active Quartier",
+                quartier_counts.index[0],
+                f"{quartier_counts.iloc[0]} donors"
+            )
+            
+            # Detailed quartier table
+            st.dataframe(
+                pd.DataFrame({
+                    "Quartier": quartier_counts.index,
+                    "Donors": quartier_counts.values,
+                    "Percentage": (quartier_counts.values / len(arrond_df) * 100).round(1)
+                }).head(10),
+                column_config={
+                    "Quartier": "Quartier Name",
+                    "Donors": st.column_config.NumberColumn(
+                        "Number of Donors",
+                        help="Total donors from this quartier"
+                    ),
+                    "Percentage": st.column_config.NumberColumn(
+                        "% of Arrondissement",
+                        help="Percentage of donors in the arrondissement",
+                        format="%.1f%%"
+                    )
+                },
+                hide_index=True,
+                use_container_width=True
+            )
 def create_health_conditions_analysis(filtered_df):
     """Analyze and visualize the impact of health conditions on eligibility"""
     st.header("Health Conditions Impact")
@@ -222,7 +444,6 @@ def create_health_conditions_analysis(filtered_df):
             hide_index=True,
             use_container_width=True
         )
-
 def create_donor_retention_analysis(filtered_df):
     """Analyze donor retention and factors affecting repeat donations"""
     st.header("Donor Retention")
@@ -770,6 +991,8 @@ def create_eligibility_analysis(filtered_df):
         )
         st.plotly_chart(fig, use_container_width=True)
 
+
+
 def get_column_by_pattern(df, pattern):
     """Helper function to find column names containing a pattern"""
     matching_cols = [col for col in df.columns if pattern.lower() in col.lower()]
@@ -929,6 +1152,7 @@ def main():
     create_campaign_effectiveness_analysis(filtered_df)
     create_donor_retention_analysis(filtered_df)
     create_health_conditions_analysis(filtered_df)
+    
     create_eligibility_analysis(filtered_df)
 
     if st.checkbox("Show Raw Data"):
