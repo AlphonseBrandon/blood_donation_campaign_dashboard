@@ -15,3 +15,10 @@ scikit-learn
 tqdm
 typer
 -e .
+folium
+geopandas
+requests
+fuzzywuzzy 
+time
+geopy
+unidecode
