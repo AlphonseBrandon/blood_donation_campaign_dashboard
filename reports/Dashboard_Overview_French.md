@@ -205,4 +205,6 @@ Un menu de navigation permet aux utilisateurs de tester leur éligibilité en fo
 
 ![vérifier_éligibilité](..\reports\figures\dashboard_images\check_eligibility.PNG)
 
-Ce qui vous amène à l'API pour la vérification de l'éligibilité.
+Ce qui vous amène à l'API pour la vérification de l'éligibilité. 
+
+Check your eligibility using the link: [check_eligibility](../https://testsiteg.pythonanywhere.com/)
