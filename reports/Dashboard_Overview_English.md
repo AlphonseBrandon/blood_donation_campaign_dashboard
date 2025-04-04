@@ -207,3 +207,5 @@ A navigation menu allows users to test for their eligibility based on the provid
 ![check_eligibility](..\reports\figures\dashboard_images\check_eligibility.PNG)
 
 Which takes you to the API for eligibility checking.
+
+Check your eligibility using the link: [check_eligibility](../https://testsiteg.pythonanywhere.com/)
