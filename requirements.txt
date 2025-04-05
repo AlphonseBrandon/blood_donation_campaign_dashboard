@@ -3,6 +3,9 @@ pandas==2.2.0
 numpy==1.26.0
 plotly==5.18.0
 geopandas==0.14.0
+fiona==1.9.5
+pyproj==3.6.1
+shapely==2.0.2
 folium==0.15.1
 streamlit-folium==0.15.0
 textblob==0.17.1
@@ -13,3 +16,4 @@ tenacity==8.2.3
 geopy==2.4.1
 requests==2.31.0
 python-dotenv==1.0.0
+rtree==1.1.0

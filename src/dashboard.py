@@ -292,52 +292,48 @@ def generate_location_coordinates(_df):
     )
     
     return df_with_coords
-    
+
+@st.cache_data
+def get_map_data(df):
+    """Cache map data generation to prevent reloading"""
+    try:
+        # Get cached coordinates
+        cached_coords = get_cached_coordinates()
+        
+        # Create a copy to avoid modifying original
+        df_with_coords = df.copy()
+        
+        # Use cached coordinates instead of geocoding
+        df_with_coords['coordinates'] = df_with_coords['Arrondissement_de_résidence'].map(
+            lambda x: cached_coords.get(x.upper(), cached_coords["YAOUNDE"])
+        )
+        
+        df_with_coords['Latitude'] = df_with_coords['coordinates'].apply(lambda x: x[0])
+        df_with_coords['Longitude'] = df_with_coords['coordinates'].apply(lambda x: x[1])
+        
+        return df_with_coords
+    except Exception as e:
+        st.error(f"Error preparing map data: {str(e)}")
+        return df
+
 def create_geographic_analysis(filtered_df):
     """Create geographic distribution visualizations with optimized map loading"""
     st.header("Map Donor Distribution")
+
+    # First ensure we have coordinates
+    map_data = get_map_data(filtered_df)
 
     # Create tabs
     tab1, tab2, tab3, tab4 = st.tabs(["Interactive Map", "Static Map", "Arrondissements", "Quartier Analysis"])
 
     with tab1:
-        # Show loading state while generating map
-        with st.spinner("Loading map..."):
-            try:
-                # Cache the coordinates generation
-                @st.cache_data(ttl=3600)  # Cache for 1 hour
-                def get_map_data(df):
-                    """Cache map data generation to prevent reloading"""
-                    # Get cached coordinates
-                    cached_coords = get_cached_coordinates()
-                    
-                    # Create a copy to avoid modifying original
-                    df_with_coords = df.copy()
-                    
-                    # Use cached coordinates instead of geocoding
-                    df_with_coords['coordinates'] = df_with_coords['Arrondissement_de_résidence'].map(
-                        lambda x: cached_coords.get(x.upper(), cached_coords["YAOUNDE"])
-                    )
-                    
-                    df_with_coords['Latitude'] = df_with_coords['coordinates'].apply(lambda x: x[0])
-                    df_with_coords['Longitude'] = df_with_coords['coordinates'].apply(lambda x: x[1])
-                    
-                    return df_with_coords
-
-                # Get cached map data
-                map_data = get_map_data(filtered_df)
-
-                # Create base map once and cache it
-                @st.cache_data(ttl=3600)
-                def create_base_map():
-                    """Create and cache base map"""
-                    m = folium.Map(location=[3.848, 11.5021], zoom_start=6)
-                    folium.TileLayer('cartodbpositron').add_to(m)
-                    return m
-
-                # Get cached base map
-                m = create_base_map()
-
+        try:
+            # Show loading state while generating map
+            with st.spinner("Loading interactive map..."):
+                # Create base map
+                m = folium.Map(location=[3.848, 11.5021], zoom_start=6)
+                folium.TileLayer('cartodbpositron').add_to(m)
+                
                 # Add marker cluster
                 marker_cluster = MarkerCluster().add_to(m)
 
@@ -351,116 +347,51 @@ def create_geographic_analysis(filtered_df):
                             fill=True,
                             fill_color='blue',
                             fill_opacity=0.6,
-                            popup=f"""
-                            <b>Arrondissement:</b> {row['Arrondissement_de_résidence']}<br>
-                            <b>Quartier:</b> {row['Quartier_de_Résidence']}<br>
-                            <b>Status:</b> {'Eligible' if row["Statut_d'éligibilité"] == 1 else 'Not Eligible'}
-                            """
+                            popup=f"Arrondissement: {row['Arrondissement_de_résidence']}"
                         ).add_to(marker_cluster)
-
-                # Add layer control
-                folium.LayerControl().add_to(m)
 
                 # Display map
                 st_folium(m, width=None, height=500)
 
-                # Show map metrics
-                col1, col2, col3 = st.columns(3)
-                with col1:
-                    st.metric(
-                        "Total Locations",
-                        len(map_data['Arrondissement_de_résidence'].unique()),
-                        "unique arrondissements"
-                    )
-                with col2:
-                    st.metric(
-                        "Coverage Area",
-                        f"{len(map_data['Quartier_de_Résidence'].unique()):,}",
-                        "unique quartiers"
-                    )
-                with col3:
-                    st.metric(
-                        "Mapped Donors",
-                        f"{len(map_data):,}",
-                        "total donors"
-                    )
-
-            except Exception as e:
-                st.error(f"Error creating map: {str(e)}")
-                st.info("Please ensure geographic data is available")
+        except Exception as e:
+            st.error(f"Error creating interactive map: {str(e)}")
+            # Fallback to basic visualization
+            st.info("Displaying basic location distribution instead")
+            location_counts = filtered_df["Arrondissement_de_résidence"].value_counts()
+            fig = px.bar(
+                x=location_counts.index,
+                y=location_counts.values,
+                title="Donor Distribution by Location",
+                labels={"x": "Location", "y": "Number of Donors"}
+            )
+            st.plotly_chart(fig, use_container_width=True)
 
     with tab2:
-        st.subheader("Static Map Distribution")
-        
-        with st.spinner("Loading static map..."):
-            try:
-                # Load the Cameroon map shapefile
-                cameroon_map = gpd.read_file('data/processed/cmr_cities.zip')
-
-                # Create a figure and axis
-                fig, ax = plt.subplots(figsize=(12, 10))
-
-                # Plot base map
-                cameroon_map.plot(ax=ax, color='lightgrey')
-
-                # Create GeoDataFrame for donors
-                donors_geo = gpd.GeoDataFrame(
-                    map_data,  # Use already processed map_data
-                    geometry=gpd.points_from_xy(map_data.Longitude, map_data.Latitude)
+        try:
+            with st.spinner("Loading static map..."):
+                # Use map_data instead of filtered_df
+                fig = px.scatter_mapbox(
+                    map_data,  # Use map_data that has coordinates
+                    lat='Latitude',
+                    lon='Longitude',
+                    color="Statut_d'éligibilité",
+                    title="Donor Distribution Map",
+                    mapbox_style="carto-positron",
+                    zoom=5,
+                    center={"lat": 3.848, "lon": 11.5021}
                 )
-                donors_geo.crs = cameroon_map.crs
+                st.plotly_chart(fig, use_container_width=True)
 
-                # Plot donor locations
-                donors_geo.plot(
-                    ax=ax,
-                    marker='o',
-                    color='red',
-                    markersize=5,
-                    label='Donors',
-                    alpha=0.6
-                )
+        except Exception as e:
+            st.error(f"Error creating static map: {str(e)}")
+            # Fallback to basic visualization
+            st.info("Displaying basic location metrics instead")
+            location_metrics = pd.DataFrame({
+                "Location": filtered_df["Arrondissement_de_résidence"].value_counts().index,
+                "Donors": filtered_df["Arrondissement_de_résidence"].value_counts().values
+            })
+            st.dataframe(location_metrics)
 
-                # Customize plot
-                plt.title('Geographical Distribution of Blood Donors in Cameroon')
-                plt.legend()
-                plt.axis('equal')
-                ax.grid(True, linestyle='--', alpha=0.6)
-
-                # Add major city labels
-                major_cities = {
-                    'Yaoundé': (3.848, 11.5021),
-                    'Douala': (4.0511, 9.7679),
-                    'Bamenda': (5.9631, 10.1591),
-                    'Garoua': (9.3017, 13.3921),
-                    'Maroua': (10.5910, 14.3158)
-                }
-
-                for city, coords in major_cities.items():
-                    ax.annotate(
-                        city,
-                        xy=coords,
-                        xytext=(5, 5),
-                        textcoords='offset points',
-                        fontsize=8,
-                        bbox=dict(
-                            boxstyle='round,pad=0.5',
-                            fc='white',
-                            ec='gray',
-                            alpha=0.7
-                        )
-                    )
-
-                # Display map and metrics
-                col1, col2 = st.columns([3, 1])
-                with col1:
-                    st.pyplot(fig)
-                with col2:
-                    st.metric("Total Locations Mapped", len(donors_geo['Arrondissement_de_résidence'].unique()))
-                    st.metric("Donor Density", f"{len(donors_geo) / cameroon_map.geometry.area.sum():.2f} donors/km²")
-
-            except Exception as e:
-                st.error(f"Error creating static map: {str(e)}")
-                st.info("Please ensure geographic data and shapefiles are available")
 
     with tab3:
         # Arrondissement analysis
