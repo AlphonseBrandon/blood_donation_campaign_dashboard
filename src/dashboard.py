@@ -6,9 +6,11 @@ from pathlib import Path
 import requests
 import json 
 from clustering_components import (
-perform_kmeans_clustering, 
-mine_cluster_information,
-clustering_data_sanitisation,
+
+    perform_kmeans_clustering, 
+    mine_cluster_information,
+    clustering_data_sanitisation,
+
 )
 import geopandas as gpd
 from geopy.geocoders import Nominatim 
@@ -18,6 +20,10 @@ from streamlit_folium import st_folium
 import time
 from tenacity import retry, stop_after_attempt, wait_exponential
 from typing import Dict, Tuple
+import matplotlib.pyplot as plt
+from textblob import TextBlob
+import re
+from wordcloud import WordCloud
 
 
 # Configuration
@@ -25,8 +31,92 @@ DATA_PATH = Path("data/processed/processed.xlsx")
 STREAMLIT_CONFIG = {
     "page_title": "Blood Donation Dashboard",
     "page_icon": "🩸",
-    "layout": "wide"
-}   
+    "layout": "wide",
+    "initial_sidebar_state": "auto",
+    "menu_items": {
+        "About": "Blood Donation Campaign Analytics Dashboard",
+        "Get help": "https://github.com/AlphonseBrandon/blood_donation_campaign_dashboard",
+        "Report a bug": "https://github.com/AlphonseBrandon/blood_donation_campaign_dashboard/issues"
+    }
+}
+
+def get_screen_width():
+    """Get current screen width using streamlit's get_option API"""
+    try:
+        if 'screen_width' not in st.session_state:
+            st.session_state.screen_width = 1200
+        
+        st.markdown(
+            """
+            <script>
+                var screenWidth = window.innerWidth;
+                if (window.streamlitPythonConnection) {
+                    window.streamlitPythonConnection.setSessionState({
+                        screen_width: screenWidth
+                    });
+                }
+            </script>
+            """,
+            unsafe_allow_html=True
+        )
+        return st.session_state.screen_width
+    except:
+        return 1200
+
+def get_responsive_columns(num_columns):
+    """Return responsive column count based on screen size"""
+    screen_width = get_screen_width()
+    if screen_width < 768:
+        return 1
+    elif screen_width < 992:
+        return min(2, num_columns) 
+    return num_columns
+
+def create_responsive_columns(num_columns):
+    """Create responsive columns based on screen width"""
+    return st.columns(get_responsive_columns(num_columns))
+
+def get_responsive_chart_config(is_mobile=False):
+    """Get responsive chart configuration"""
+    return {
+        "height": 350 if is_mobile else 500,
+        "margin": dict(l=10, r=10, t=30, b=10),
+        "autosize": True,
+        "showlegend": not is_mobile
+    }
+
+def create_responsive_chart(fig, use_container_width=True):
+    """Create responsive plotly chart"""
+    is_mobile = get_screen_width() < 768
+    config = get_responsive_chart_config(is_mobile)
+    fig.update_layout(**config)
+    return st.plotly_chart(fig, use_container_width=use_container_width)
+
+def create_responsive_map(m, height=None):
+    """Create responsive folium map"""
+    if height is None:
+        height = 350 if get_screen_width() < 768 else 500
+    return st_folium(m, width=None, height=height)
+
+def display_responsive_metrics(metrics):
+    """Display metrics responsively"""
+    col_count = get_responsive_columns(4)
+    cols = create_responsive_columns(col_count)
+    
+    metrics_data = [
+        ("Total Donors", f"{metrics['total_donors']:,}", None),
+        ("Eligibility Rate", f"{metrics['eligibility_rate']:.1f}%" if metrics['eligibility_rate'] else "N/A", None),
+        ("Average Age", f"{metrics['avg_age']:.1f} years" if metrics['avg_age'] else "N/A", None),
+        ("Avg Hemoglobin", f"{metrics['avg_hemoglobin']:.1f} g/dL" if metrics['avg_hemoglobin'] else "N/A", None)
+    ]
+    
+    for i, col in enumerate(cols):
+        with col:
+            start_idx = i * (len(metrics_data) // col_count)
+            end_idx = (i + 1) * (len(metrics_data) // col_count)
+            for metric_name, value, delta in metrics_data[start_idx:end_idx]:
+                st.metric(metric_name, value, delta)
+
 
 @st.cache_data
 def load_data():
@@ -41,7 +131,7 @@ def get_default_coordinates() -> Dict[str, Tuple[float, float]]:
         "YAOUNDE": (3.848, 11.5021),
         "DOUALA": (4.0511, 9.7679),
         "R A S": (3.848, 11.5021),  # Default to Yaounde if unknown
-        # Add more known locations as needed
+       
     }
 
 @retry(
@@ -187,158 +277,294 @@ def generate_location_coordinates(_df):
     return df_with_coords
     
 def create_geographic_analysis(filtered_df):
-    """Create geographic distribution visualizations"""
-    st.header("Geographic Distribution")
-    
-    # Get cached coordinates
-    df_with_coords = generate_location_coordinates(filtered_df)
-    
-    tab1, tab2, tab3 = st.tabs(["Interactive Map", "Arrondissements", "Quartier Analysis"])
-    
+    """Create geographic distribution visualizations with optimized map loading"""
+    st.header("Map Donor Distribution")
+
+    # Create tabs
+    tab1, tab2, tab3, tab4 = st.tabs(["Interactive Map", "Static Map", "Arrondissements", "Quartier Analysis"])
+
     with tab1:
-        try:
-            # Create Folium map using cached coordinates
-            m = folium.Map(location=[3.848, 11.5021], zoom_start=6)
-            marker_cluster = folium.plugins.MarkerCluster().add_to(m)
-            
-            for idx, row in df_with_coords.iterrows():
-                if pd.notna(row['Latitude']) and pd.notna(row['Longitude']):
-                    folium.CircleMarker(
-                        location=(row['Latitude'], row['Longitude']),
-                        radius=5,
-                        color='blue',
-                        fill=True,
-                        fill_color='blue',
-                        fill_opacity=0.6,
-                        popup=f"""
-                        <b>Arrondissement:</b> {row['Arrondissement_de_résidence']}<br>
-                        <b>Quartier:</b> {row['Quartier_de_Résidence']}<br>
-                        <b>Status:</b> {'Eligible' if row["Statut_d'éligibilité"] == 1 else 'Not Eligible'}
-                        """
-                    ).add_to(marker_cluster)
-            
-            folium.LayerControl().add_to(m)
-            st_folium(m, width=None, height=500)
-            
-        except Exception as e:
-            st.error(f"Error creating map: {str(e)}")
-            st.info("Please ensure geographic data is available in the dataset")
+        # Show loading state while generating map
+        with st.spinner("Loading map..."):
+            try:
+                # Cache the coordinates generation
+                @st.cache_data(ttl=3600)  # Cache for 1 hour
+                def get_map_data(df):
+                    """Cache map data generation to prevent reloading"""
+                    # Get cached coordinates
+                    cached_coords = get_cached_coordinates()
+                    
+                    # Create a copy to avoid modifying original
+                    df_with_coords = df.copy()
+                    
+                    # Use cached coordinates instead of geocoding
+                    df_with_coords['coordinates'] = df_with_coords['Arrondissement_de_résidence'].map(
+                        lambda x: cached_coords.get(x.upper(), cached_coords["YAOUNDE"])
+                    )
+                    
+                    df_with_coords['Latitude'] = df_with_coords['coordinates'].apply(lambda x: x[0])
+                    df_with_coords['Longitude'] = df_with_coords['coordinates'].apply(lambda x: x[1])
+                    
+                    return df_with_coords
+
+                # Get cached map data
+                map_data = get_map_data(filtered_df)
+
+                # Create base map once and cache it
+                @st.cache_data(ttl=3600)
+                def create_base_map():
+                    """Create and cache base map"""
+                    m = folium.Map(location=[3.848, 11.5021], zoom_start=6)
+                    folium.TileLayer('cartodbpositron').add_to(m)
+                    return m
+
+                # Get cached base map
+                m = create_base_map()
+
+                # Add marker cluster
+                marker_cluster = MarkerCluster().add_to(m)
+
+                # Add markers efficiently
+                for idx, row in map_data.iterrows():
+                    if pd.notna(row['Latitude']) and pd.notna(row['Longitude']):
+                        folium.CircleMarker(
+                            location=(row['Latitude'], row['Longitude']),
+                            radius=5,
+                            color='blue',
+                            fill=True,
+                            fill_color='blue',
+                            fill_opacity=0.6,
+                            popup=f"""
+                            <b>Arrondissement:</b> {row['Arrondissement_de_résidence']}<br>
+                            <b>Quartier:</b> {row['Quartier_de_Résidence']}<br>
+                            <b>Status:</b> {'Eligible' if row["Statut_d'éligibilité"] == 1 else 'Not Eligible'}
+                            """
+                        ).add_to(marker_cluster)
+
+                # Add layer control
+                folium.LayerControl().add_to(m)
+
+                # Display map
+                st_folium(m, width=None, height=500)
+
+                # Show map metrics
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric(
+                        "Total Locations",
+                        len(map_data['Arrondissement_de_résidence'].unique()),
+                        "unique arrondissements"
+                    )
+                with col2:
+                    st.metric(
+                        "Coverage Area",
+                        f"{len(map_data['Quartier_de_Résidence'].unique()):,}",
+                        "unique quartiers"
+                    )
+                with col3:
+                    st.metric(
+                        "Mapped Donors",
+                        f"{len(map_data):,}",
+                        "total donors"
+                    )
+
+            except Exception as e:
+                st.error(f"Error creating map: {str(e)}")
+                st.info("Please ensure geographic data is available")
 
     with tab2:
-        st.subheader("Arrondissement Distribution")
+        st.subheader("Static Map Distribution")
         
-        # Analyze arrondissement distribution
-        arrond_counts = filtered_df['Arrondissement_de_résidence'].value_counts()
-        
-        # Create visualization
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            # Top 10 arrondissements bar chart
-            fig = px.bar(
-                x=arrond_counts.head(10).index,
-                y=arrond_counts.head(10).values,
-                title="Top 10 Arrondissements by Donor Count",
-                labels={"x": "Arrondissement", "y": "Number of Donors"},
-                color=arrond_counts.head(10).values,
-                color_continuous_scale="Viridis"
-            )
-            fig.update_layout(xaxis_tickangle=-45)
-            st.plotly_chart(fig, use_container_width=True)
-        
-        with col2:
-            # Display metrics
-            total_arronds = len(arrond_counts)
-            total_donors = len(filtered_df)
-            avg_donors = total_donors / total_arronds if total_arronds > 0 else 0
-            
-            st.metric(
-                "Total Arrondissements",
-                f"{total_arronds:,}",
-                f"Avg {avg_donors:.1f} donors per area"
-            )
-            
-            st.metric(
-                "Most Active Area",
-                arrond_counts.index[0],
-                f"{arrond_counts.iloc[0]:,} donors"
-            )
-            
-            st.metric(
-                "Coverage Rate",
-                f"{(total_arronds/len(filtered_df.Arrondissement_de_résidence.unique())*100):.1f}%",
-                "of total areas"
-            )
+        with st.spinner("Loading static map..."):
+            try:
+                # Load the Cameroon map shapefile
+                cameroon_map = gpd.read_file('data/processed/cmr_cities.zip')
+
+                # Create a figure and axis
+                fig, ax = plt.subplots(figsize=(12, 10))
+
+                # Plot base map
+                cameroon_map.plot(ax=ax, color='lightgrey')
+
+                # Create GeoDataFrame for donors
+                donors_geo = gpd.GeoDataFrame(
+                    map_data,  # Use already processed map_data
+                    geometry=gpd.points_from_xy(map_data.Longitude, map_data.Latitude)
+                )
+                donors_geo.crs = cameroon_map.crs
+
+                # Plot donor locations
+                donors_geo.plot(
+                    ax=ax,
+                    marker='o',
+                    color='red',
+                    markersize=5,
+                    label='Donors',
+                    alpha=0.6
+                )
+
+                # Customize plot
+                plt.title('Geographical Distribution of Blood Donors in Cameroon')
+                plt.legend()
+                plt.axis('equal')
+                ax.grid(True, linestyle='--', alpha=0.6)
+
+                # Add major city labels
+                major_cities = {
+                    'Yaoundé': (3.848, 11.5021),
+                    'Douala': (4.0511, 9.7679),
+                    'Bamenda': (5.9631, 10.1591),
+                    'Garoua': (9.3017, 13.3921),
+                    'Maroua': (10.5910, 14.3158)
+                }
+
+                for city, coords in major_cities.items():
+                    ax.annotate(
+                        city,
+                        xy=coords,
+                        xytext=(5, 5),
+                        textcoords='offset points',
+                        fontsize=8,
+                        bbox=dict(
+                            boxstyle='round,pad=0.5',
+                            fc='white',
+                            ec='gray',
+                            alpha=0.7
+                        )
+                    )
+
+                # Display map and metrics
+                col1, col2 = st.columns([3, 1])
+                with col1:
+                    st.pyplot(fig)
+                with col2:
+                    st.metric("Total Locations Mapped", len(donors_geo['Arrondissement_de_résidence'].unique()))
+                    st.metric("Donor Density", f"{len(donors_geo) / cameroon_map.geometry.area.sum():.2f} donors/km²")
+
+            except Exception as e:
+                st.error(f"Error creating static map: {str(e)}")
+                st.info("Please ensure geographic data and shapefiles are available")
 
     with tab3:
-        st.subheader("Quartier Analysis")
+        # Arrondissement analysis
+        st.subheader("Donor Distribution by Arrondissement")
         
-        # Allow user to select arrondissement
-        selected_arrond = st.selectbox(
-            "Select Arrondissement",
-            options=sorted(filtered_df['Arrondissement_de_résidence'].unique())
-        )
+        # Calculate arrondissement metrics
+        arrond_counts = filtered_df["Arrondissement_de_résidence"].value_counts()
+        top_10_arrond = arrond_counts.head(10)
         
-        # Filter for selected arrondissement
-        arrond_df = filtered_df[filtered_df['Arrondissement_de_résidence'] == selected_arrond]
+        # Create summary DataFrame
+        arrond_df = pd.DataFrame({
+            "Arrondissement": top_10_arrond.index,
+            "Donors": top_10_arrond.values,
+            "Percentage": (top_10_arrond.values / len(filtered_df) * 100).round(1)
+        })
         
-        # Analyze quartiers
-        quartier_counts = arrond_df['Quartier_de_Résidence'].value_counts()
-        
+        # Display metrics
         col1, col2 = st.columns(2)
         
         with col1:
-            # Quartier distribution visualization
+            # Bar chart
             fig = px.bar(
-                x=quartier_counts.head(10).index,
-                y=quartier_counts.head(10).values,
-                title=f"Top 10 Quartiers in {selected_arrond}",
-                labels={"x": "Quartier", "y": "Number of Donors"},
-                color=quartier_counts.head(10).values,
+                arrond_df,
+                x="Donors",
+                y="Arrondissement",
+                orientation='h',
+                title="Top 10 Arrondissements by Donor Count",
+                labels={"Donors": "Number of Donors"},
+                color="Donors",
                 color_continuous_scale="Viridis"
             )
-            fig.update_layout(xaxis_tickangle=-45)
             st.plotly_chart(fig, use_container_width=True)
         
         with col2:
-            # Quartier metrics
-            st.metric(
-                "Total Quartiers",
-                len(quartier_counts),
-                f"{len(arrond_df)} total donors"
-            )
-            
-            st.metric(
-                "Most Active Quartier",
-                quartier_counts.index[0],
-                f"{quartier_counts.iloc[0]} donors"
-            )
-            
-            # Detailed quartier table
+            # Detailed metrics table
             st.dataframe(
-                pd.DataFrame({
-                    "Quartier": quartier_counts.index,
-                    "Donors": quartier_counts.values,
-                    "Percentage": (quartier_counts.values / len(arrond_df) * 100).round(1)
-                }).head(10),
+                arrond_df,
                 column_config={
-                    "Quartier": "Quartier Name",
+                    "Arrondissement": "Arrondissement",
                     "Donors": st.column_config.NumberColumn(
                         "Number of Donors",
-                        help="Total donors from this quartier"
+                        help="Total number of donors from this arrondissement",
+                        format="%d"
                     ),
                     "Percentage": st.column_config.NumberColumn(
-                        "% of Arrondissement",
-                        help="Percentage of donors in the arrondissement",
+                        "% of Total Donors",
+                        help="Percentage of total donors from this arrondissement",
                         format="%.1f%%"
                     )
                 },
                 hide_index=True,
                 use_container_width=True
             )
+
+    with tab4:
+        # Quartier analysis
+        st.subheader("Quartier Distribution Analysis")
+        
+        # Arrondissement selector
+        selected_arrond = st.selectbox(
+            "Select Arrondissement or Quartier to see distribution",
+            options=sorted(filtered_df["Arrondissement_de_résidence"].unique())
+        )
+        
+        # Filter data for selected arrondissement
+        arrond_data = filtered_df[filtered_df["Arrondissement_de_résidence"] == selected_arrond]
+        quartier_counts = arrond_data["Quartier_de_Résidence"].value_counts()
+        
+        # Create visualization
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Bar chart of quartier distribution
+            fig = px.bar(
+                x=quartier_counts.head(10).values,
+                y=quartier_counts.head(10).index,
+                orientation='h',
+                title=f"Top 10 Quartiers in {selected_arrond}",
+                labels={"x": "Number of Donors", "y": "Quartier"},
+                color=quartier_counts.head(10).values,
+                color_continuous_scale="Viridis"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        
+        with col2:
+            # Quartier metrics
+            quartier_metrics = pd.DataFrame({
+                "Quartier": quartier_counts.index,
+                "Donors": quartier_counts.values,
+                "Percentage": (quartier_counts.values / len(arrond_data) * 100).round(1)
+            })
+            
+            st.dataframe(
+                quartier_metrics,
+                column_config={
+                    "Quartier": "Quartier",
+                    "Donors": st.column_config.NumberColumn(
+                        "Number of Donors",
+                        help="Total number of donors from this quartier",
+                        format="%d"
+                    ),
+                    "Percentage": st.column_config.NumberColumn(
+                        "% of Arrondissement",
+                        help="Percentage of donors in this arrondissement",
+                        format="%.1f%%"
+                    )
+                },
+                hide_index=True,
+                use_container_width=True
+            )
+
 def create_health_conditions_analysis(filtered_df):
     """Analyze and visualize the impact of health conditions on eligibility"""
-    st.header("Health Conditions Impact")
+    st.header("Health Conditions & Eligibility")
+
+    # Helper function to extract condition name from column
+    def clean_condition_name(column_name):
+        """Extract condition name from between square brackets"""
+        import re
+        match = re.search(r'\[(.*?)\]', column_name)
+        return match.group(1) if match else column_name
 
     # Define health condition columns based on documentation
     health_conditions = {
@@ -358,19 +584,32 @@ def create_health_conditions_analysis(filtered_df):
 
     # Combine all health conditions
     all_conditions = [cond for conds in health_conditions.values() for cond in conds]
+    
+    # Calculate deferrals using original column names
     total_deferrals = filtered_df[all_conditions].apply(
         lambda x: x.value_counts().get("Oui", 0)
     ).sort_values(ascending=True)
 
-    # Calculate metrics
+    # Create display names mapping but keep original data
+    display_names = {col: clean_condition_name(col) for col in total_deferrals.index}
+    
+    # Create visualization data with display names
+    viz_data = pd.DataFrame({
+        'Original': total_deferrals.index,
+        'Display': [display_names[col] for col in total_deferrals.index],
+        'Values': total_deferrals.values
+    })
+
+    # Calculate other metrics using original column names
     total_deferral_rate = (
         filtered_df[all_conditions].eq("Oui").any(axis=1).mean() * 100
     ).round(1)
     health_eligible = len(filtered_df) - filtered_df[all_conditions].eq("Oui").any(axis=1).sum()
 
-    # Create summary DataFrame
+    # Create summary DataFrame with both original and display names
     summary_df = pd.DataFrame({
-        "Condition": total_deferrals.index,
+        "Original": total_deferrals.index,
+        "Condition": [display_names[col] for col in total_deferrals.index],
         "Deferrals": total_deferrals.values,
         "Percentage": (total_deferrals.values / len(filtered_df) * 100).round(1)
     })
@@ -382,13 +621,18 @@ def create_health_conditions_analysis(filtered_df):
         col1, col2 = st.columns([2, 1])
         
         with col1:
-            # Bar chart of deferrals
+            # Bar chart using display names
             fig = px.bar(
-                total_deferrals,
+                viz_data,
+                x='Values',
+                y='Display',
                 orientation="h",
                 title="Health Conditions Impact on Eligibility",
-                labels={"value": "Number of Deferrals", "index": "Condition"},
-                color=total_deferrals.values,
+                labels={
+                    "Values": "Number of Deferrals",
+                    "Display": "Condition"
+                },
+                color='Values',
                 color_continuous_scale="Reds"
             )
             fig.update_layout(
@@ -398,32 +642,11 @@ def create_health_conditions_analysis(filtered_df):
             )
             st.plotly_chart(fig, use_container_width=True)
 
-        with col2:
-            # Display metrics
-            st.metric(
-                "Health-Related Deferral Rate",
-                f"{total_deferral_rate}%",
-                f"of {len(filtered_df):,} donors"
-            )
-
-            # Pie chart of eligibility
-            fig = px.pie(
-                values=[health_eligible, len(filtered_df) - health_eligible],
-                names=["Eligible", "Deferred"],
-                title="Health-Based Eligibility Distribution",
-                color_discrete_sequence=["green", "red"]
-            )
-            fig.update_layout(
-                showlegend=True,
-                height=300,
-                margin=dict(t=30, b=0, l=0, r=0)
-            )
-            st.plotly_chart(fig, use_container_width=True)
-
     with tab2:
         st.subheader("Detailed Health Conditions Summary")
+        # Display using formatted names but keep original data
         st.dataframe(
-            summary_df,
+            summary_df[["Condition", "Deferrals", "Percentage"]],  # Exclude Original column from display
             column_config={
                 "Condition": "Health Condition",
                 "Deferrals": st.column_config.NumberColumn(
@@ -560,7 +783,7 @@ def create_donor_retention_analysis(filtered_df):
             hide_index=True,
             use_container_width=True
         )
-        
+
 def create_campaign_effectiveness_analysis(filtered_df):
     """Analyze campaign effectiveness with focus on demographic contributions"""
     st.header("Campaign Effectiveness")
@@ -719,7 +942,9 @@ def create_campaign_effectiveness_analysis(filtered_df):
 
 def create_donor_profiling_analysis(filtered_df):
     """Analyze and profile ideal donors based on demographic and health features"""
-    st.header("Donor Profiling")
+
+    st.header("Profiling Ideal Donors")
+
 
     # Create success metrics for profiling
     filtered_df['is_eligible'] = filtered_df["Statut_d'éligibilité"] == 1
@@ -1076,50 +1301,21 @@ def main():
     st.sidebar.markdown("---")
     st.sidebar.header("Check Your Eligibility")
 
-    with st.sidebar.form("eligibility_form"):
-        age = st.number_input("Âge (ans)", min_value=0, max_value=120, value=30)
-        poids = st.number_input("Poids (kg)", min_value=0.0, max_value=300.0, value=70.0, step=0.1)
-        genre = st.selectbox("Genre", ["Homme", "Femme"])
-        taille = st.number_input("Taille (cm)", min_value=0, max_value=250, value=170)
-        chronic_diseases = st.radio("Avez-vous une maladie chronique ?", ["Oui", "Non"])
-        transmissible_diseases = st.radio("Avez-vous une maladie transmissible ?", ["Oui", "Non"])
 
-        submit_button = st.form_submit_button("Vérifier mon éligibilité")
+    if st.sidebar.button("Vérifier mon éligibilité", use_container_width=True):
+        st.sidebar.info("Redirecting to eligibility check website...")
+        st.sidebar.markdown(
+            f'<a href="https://testsiteg.pythonanywhere.com/" target="_blank" rel="noopener noreferrer" '
+            f'style="display: inline-block; width: 100%; text-align: center; '
+            f'text-decoration: none; background-color: transparent;">'
+            f'Click here if not redirected automatically</a>', 
+            unsafe_allow_html=True
+        )
+        st.sidebar.markdown(
+            '<script>window.open("https://testsiteg.pythonanywhere.com/", "_blank");</script>', 
+            unsafe_allow_html=True
+        )
 
-        # --- Prediction ---
-        if submit_button:
-            # form data
-            form_data = {
-                "age": age,
-                "poids": poids,
-                "genre": genre,
-                "taille": taille,
-                "chronic_diseases": chronic_diseases,
-                "transmissible_diseases": transmissible_diseases,
-            }
-
-            prediction_placeholder = st.empty()
-            with prediction_placeholder:
-                st.info("Please wait while we check your eligibility...")
-
-            result = get_prediction(form_data)
-
-            prediction_placeholder.empty()
-
-            # prediction results
-            if "error" in result:
-                st.error(f"Error: {result['error']}")
-            else:
-                probability = result["probability"]
-                if float ( probability ) >= 0.4:
-                    prediction = "1"
-                else:
-                    prediction = "0"
-
-                if prediction == "1":
-                    st.success(f"Félicitations ! Vous êtes éligible au don de sang. Probabilité d'éligibilité : {probability}")
-                else:
-                    st.error(f"Désolé, vous n'êtes pas éligible au don de sang. Probabilité d'éligibilité : {probability}")
 
       
     # Main dashboard layout
@@ -1162,14 +1358,14 @@ def main():
         else:
             st.metric("Avg Hemoglobin", "N/A")
 
-    # Rest of the dashboard sections
-    create_donor_profiling_analysis(filtered_df)
+
+
     create_geographic_analysis(filtered_df)
-    create_demographic_distribution(filtered_df)
-    create_campaign_effectiveness_analysis(filtered_df)
-    create_donor_retention_analysis(filtered_df)
+    create_demographic_distribution(filtered_df) 
     create_health_conditions_analysis(filtered_df)
-    
+    create_donor_profiling_analysis(filtered_df)
+    create_campaign_effectiveness_analysis(filtered_df)       
+    create_donor_retention_analysis(filtered_df)       
     create_eligibility_analysis(filtered_df)
 
     # Raw Data Table
