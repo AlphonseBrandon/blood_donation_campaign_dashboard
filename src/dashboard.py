@@ -26,6 +26,23 @@ import re
 from wordcloud import WordCloud
 
 
+import os
+from pathlib import Path
+
+def get_data_path():
+    """Get correct data path for both local and deployed environments"""
+    root_dir = Path(__file__).parent.parent
+    data_path = root_dir / "data" / "processed" / "processed.xlsx"
+    if not data_path.exists():
+        # Fallback for deployment
+        data_path = Path("data/processed/processed.xlsx")
+    return data_path
+
+DATA_PATH = get_data_path()
+
+
+
+
 # Configuration
 DATA_PATH = Path("data/processed/processed.xlsx")
 STREAMLIT_CONFIG = {
