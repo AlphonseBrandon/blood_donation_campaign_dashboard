@@ -7,6 +7,8 @@
 
 A comprehensive data analytics and visualization dashboard for blood donation campaigns, developed for IndabaX Cameroon 2025 Hackathon. This tool helps campaign organizers make data-driven decisions to improve blood donation initiatives through real-time analytics, donor profiling, and campaign effectiveness tracking.
 
+Here is [the project link](https://testsiteg.pythonanywhere.com/) to check if you are eligible to donate blood. 
+
 ## 🎯 Project Overview
 
 The Blood Donation Campaign Dashboard addresses critical challenges in blood donation management by providing:
