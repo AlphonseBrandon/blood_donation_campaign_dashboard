@@ -6,9 +6,11 @@ from pathlib import Path
 import requests
 import json 
 from clustering_components import (
+
     perform_kmeans_clustering, 
     mine_cluster_information,
     clustering_data_sanitisation,
+
 )
 import geopandas as gpd
 from geopy.geocoders import Nominatim 
@@ -22,6 +24,7 @@ import matplotlib.pyplot as plt
 from textblob import TextBlob
 import re
 from wordcloud import WordCloud
+
 
 # Configuration
 DATA_PATH = Path("data/processed/processed.xlsx")
@@ -780,7 +783,7 @@ def create_donor_retention_analysis(filtered_df):
             hide_index=True,
             use_container_width=True
         )
-                
+
 def create_campaign_effectiveness_analysis(filtered_df):
     """Analyze campaign effectiveness with focus on demographic contributions"""
     st.header("Campaign Effectiveness")
@@ -939,7 +942,9 @@ def create_campaign_effectiveness_analysis(filtered_df):
 
 def create_donor_profiling_analysis(filtered_df):
     """Analyze and profile ideal donors based on demographic and health features"""
+
     st.header("Profiling Ideal Donors")
+
 
     # Create success metrics for profiling
     filtered_df['is_eligible'] = filtered_df["Statut_d'éligibilité"] == 1
@@ -1296,6 +1301,7 @@ def main():
     st.sidebar.markdown("---")
     st.sidebar.header("Check Your Eligibility")
 
+
     if st.sidebar.button("Vérifier mon éligibilité", use_container_width=True):
         st.sidebar.info("Redirecting to eligibility check website...")
         st.sidebar.markdown(
@@ -1309,6 +1315,7 @@ def main():
             '<script>window.open("https://testsiteg.pythonanywhere.com/", "_blank");</script>', 
             unsafe_allow_html=True
         )
+
 
       
     # Main dashboard layout
@@ -1351,7 +1358,8 @@ def main():
         else:
             st.metric("Avg Hemoglobin", "N/A")
 
-    # Rest of the dashboard sections
+
+
     create_geographic_analysis(filtered_df)
     create_demographic_distribution(filtered_df) 
     create_health_conditions_analysis(filtered_df)
