@@ -6,9 +6,9 @@ from pathlib import Path
 import requests
 import json 
 from clustering_components import (
-perform_kmeans_clustering, 
-mine_cluster_information,
-clustering_data_sanitisation,
+    perform_kmeans_clustering, 
+    mine_cluster_information,
+    clustering_data_sanitisation,
 )
 import geopandas as gpd
 from geopy.geocoders import Nominatim 
@@ -19,15 +19,101 @@ import time
 from tenacity import retry, stop_after_attempt, wait_exponential
 from typing import Dict, Tuple
 import matplotlib.pyplot as plt
-
+from textblob import TextBlob
+import re
+from wordcloud import WordCloud
 
 # Configuration
 DATA_PATH = Path("data/processed/processed.xlsx")
 STREAMLIT_CONFIG = {
     "page_title": "Blood Donation Dashboard",
     "page_icon": "🩸",
-    "layout": "wide"
-}   
+    "layout": "wide",
+    "initial_sidebar_state": "auto",
+    "menu_items": {
+        "About": "Blood Donation Campaign Analytics Dashboard",
+        "Get help": "https://github.com/AlphonseBrandon/blood_donation_campaign_dashboard",
+        "Report a bug": "https://github.com/AlphonseBrandon/blood_donation_campaign_dashboard/issues"
+    }
+}
+
+def get_screen_width():
+    """Get current screen width using streamlit's get_option API"""
+    try:
+        if 'screen_width' not in st.session_state:
+            st.session_state.screen_width = 1200
+        
+        st.markdown(
+            """
+            <script>
+                var screenWidth = window.innerWidth;
+                if (window.streamlitPythonConnection) {
+                    window.streamlitPythonConnection.setSessionState({
+                        screen_width: screenWidth
+                    });
+                }
+            </script>
+            """,
+            unsafe_allow_html=True
+        )
+        return st.session_state.screen_width
+    except:
+        return 1200
+
+def get_responsive_columns(num_columns):
+    """Return responsive column count based on screen size"""
+    screen_width = get_screen_width()
+    if screen_width < 768:
+        return 1
+    elif screen_width < 992:
+        return min(2, num_columns) 
+    return num_columns
+
+def create_responsive_columns(num_columns):
+    """Create responsive columns based on screen width"""
+    return st.columns(get_responsive_columns(num_columns))
+
+def get_responsive_chart_config(is_mobile=False):
+    """Get responsive chart configuration"""
+    return {
+        "height": 350 if is_mobile else 500,
+        "margin": dict(l=10, r=10, t=30, b=10),
+        "autosize": True,
+        "showlegend": not is_mobile
+    }
+
+def create_responsive_chart(fig, use_container_width=True):
+    """Create responsive plotly chart"""
+    is_mobile = get_screen_width() < 768
+    config = get_responsive_chart_config(is_mobile)
+    fig.update_layout(**config)
+    return st.plotly_chart(fig, use_container_width=use_container_width)
+
+def create_responsive_map(m, height=None):
+    """Create responsive folium map"""
+    if height is None:
+        height = 350 if get_screen_width() < 768 else 500
+    return st_folium(m, width=None, height=height)
+
+def display_responsive_metrics(metrics):
+    """Display metrics responsively"""
+    col_count = get_responsive_columns(4)
+    cols = create_responsive_columns(col_count)
+    
+    metrics_data = [
+        ("Total Donors", f"{metrics['total_donors']:,}", None),
+        ("Eligibility Rate", f"{metrics['eligibility_rate']:.1f}%" if metrics['eligibility_rate'] else "N/A", None),
+        ("Average Age", f"{metrics['avg_age']:.1f} years" if metrics['avg_age'] else "N/A", None),
+        ("Avg Hemoglobin", f"{metrics['avg_hemoglobin']:.1f} g/dL" if metrics['avg_hemoglobin'] else "N/A", None)
+    ]
+    
+    for i, col in enumerate(cols):
+        with col:
+            start_idx = i * (len(metrics_data) // col_count)
+            end_idx = (i + 1) * (len(metrics_data) // col_count)
+            for metric_name, value, delta in metrics_data[start_idx:end_idx]:
+                st.metric(metric_name, value, delta)
+
 
 @st.cache_data
 def load_data():
@@ -42,7 +128,7 @@ def get_default_coordinates() -> Dict[str, Tuple[float, float]]:
         "YAOUNDE": (3.848, 11.5021),
         "DOUALA": (4.0511, 9.7679),
         "R A S": (3.848, 11.5021),  # Default to Yaounde if unknown
-        # Add more known locations as needed
+       
     }
 
 @retry(
@@ -694,7 +780,7 @@ def create_donor_retention_analysis(filtered_df):
             hide_index=True,
             use_container_width=True
         )
-        
+                
 def create_campaign_effectiveness_analysis(filtered_df):
     """Analyze campaign effectiveness with focus on demographic contributions"""
     st.header("Campaign Effectiveness")
@@ -1271,7 +1357,7 @@ def main():
     create_health_conditions_analysis(filtered_df)
     create_donor_profiling_analysis(filtered_df)
     create_campaign_effectiveness_analysis(filtered_df)       
-    create_donor_retention_analysis(filtered_df)        
+    create_donor_retention_analysis(filtered_df)       
     create_eligibility_analysis(filtered_df)
 
     # Raw Data Table
