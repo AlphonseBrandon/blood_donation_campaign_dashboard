@@ -18,6 +18,7 @@ from streamlit_folium import st_folium
 import time
 from tenacity import retry, stop_after_attempt, wait_exponential
 from typing import Dict, Tuple
+import matplotlib.pyplot as plt
 
 
 # Configuration
@@ -187,155 +188,284 @@ def generate_location_coordinates(_df):
     return df_with_coords
     
 def create_geographic_analysis(filtered_df):
-    """Create geographic distribution visualizations"""
+    """Create geographic distribution visualizations with optimized map loading"""
     st.header("Geographic Distribution")
-    
-    # Get cached coordinates
-    df_with_coords = generate_location_coordinates(filtered_df)
-    
-    tab1, tab2, tab3 = st.tabs(["Interactive Map", "Arrondissements", "Quartier Analysis"])
-    
+
+    # Create tabs
+    tab1, tab2, tab3, tab4 = st.tabs(["Interactive Map", "Static Map", "Arrondissements", "Quartier Analysis"])
+
     with tab1:
-        try:
-            # Create Folium map using cached coordinates
-            m = folium.Map(location=[3.848, 11.5021], zoom_start=6)
-            marker_cluster = folium.plugins.MarkerCluster().add_to(m)
-            
-            for idx, row in df_with_coords.iterrows():
-                if pd.notna(row['Latitude']) and pd.notna(row['Longitude']):
-                    folium.CircleMarker(
-                        location=(row['Latitude'], row['Longitude']),
-                        radius=5,
-                        color='blue',
-                        fill=True,
-                        fill_color='blue',
-                        fill_opacity=0.6,
-                        popup=f"""
-                        <b>Arrondissement:</b> {row['Arrondissement_de_résidence']}<br>
-                        <b>Quartier:</b> {row['Quartier_de_Résidence']}<br>
-                        <b>Status:</b> {'Eligible' if row["Statut_d'éligibilité"] == 1 else 'Not Eligible'}
-                        """
-                    ).add_to(marker_cluster)
-            
-            folium.LayerControl().add_to(m)
-            st_folium(m, width=None, height=500)
-            
-        except Exception as e:
-            st.error(f"Error creating map: {str(e)}")
-            st.info("Please ensure geographic data is available in the dataset")
+        # Show loading state while generating map
+        with st.spinner("Loading map..."):
+            try:
+                # Cache the coordinates generation
+                @st.cache_data(ttl=3600)  # Cache for 1 hour
+                def get_map_data(df):
+                    """Cache map data generation to prevent reloading"""
+                    # Get cached coordinates
+                    cached_coords = get_cached_coordinates()
+                    
+                    # Create a copy to avoid modifying original
+                    df_with_coords = df.copy()
+                    
+                    # Use cached coordinates instead of geocoding
+                    df_with_coords['coordinates'] = df_with_coords['Arrondissement_de_résidence'].map(
+                        lambda x: cached_coords.get(x.upper(), cached_coords["YAOUNDE"])
+                    )
+                    
+                    df_with_coords['Latitude'] = df_with_coords['coordinates'].apply(lambda x: x[0])
+                    df_with_coords['Longitude'] = df_with_coords['coordinates'].apply(lambda x: x[1])
+                    
+                    return df_with_coords
+
+                # Get cached map data
+                map_data = get_map_data(filtered_df)
+
+                # Create base map once and cache it
+                @st.cache_data(ttl=3600)
+                def create_base_map():
+                    """Create and cache base map"""
+                    m = folium.Map(location=[3.848, 11.5021], zoom_start=6)
+                    folium.TileLayer('cartodbpositron').add_to(m)
+                    return m
+
+                # Get cached base map
+                m = create_base_map()
+
+                # Add marker cluster
+                marker_cluster = MarkerCluster().add_to(m)
+
+                # Add markers efficiently
+                for idx, row in map_data.iterrows():
+                    if pd.notna(row['Latitude']) and pd.notna(row['Longitude']):
+                        folium.CircleMarker(
+                            location=(row['Latitude'], row['Longitude']),
+                            radius=5,
+                            color='blue',
+                            fill=True,
+                            fill_color='blue',
+                            fill_opacity=0.6,
+                            popup=f"""
+                            <b>Arrondissement:</b> {row['Arrondissement_de_résidence']}<br>
+                            <b>Quartier:</b> {row['Quartier_de_Résidence']}<br>
+                            <b>Status:</b> {'Eligible' if row["Statut_d'éligibilité"] == 1 else 'Not Eligible'}
+                            """
+                        ).add_to(marker_cluster)
+
+                # Add layer control
+                folium.LayerControl().add_to(m)
+
+                # Display map
+                st_folium(m, width=None, height=500)
+
+                # Show map metrics
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric(
+                        "Total Locations",
+                        len(map_data['Arrondissement_de_résidence'].unique()),
+                        "unique arrondissements"
+                    )
+                with col2:
+                    st.metric(
+                        "Coverage Area",
+                        f"{len(map_data['Quartier_de_Résidence'].unique()):,}",
+                        "unique quartiers"
+                    )
+                with col3:
+                    st.metric(
+                        "Mapped Donors",
+                        f"{len(map_data):,}",
+                        "total donors"
+                    )
+
+            except Exception as e:
+                st.error(f"Error creating map: {str(e)}")
+                st.info("Please ensure geographic data is available")
 
     with tab2:
-        st.subheader("Arrondissement Distribution")
+        st.subheader("Static Map Distribution")
         
-        # Analyze arrondissement distribution
-        arrond_counts = filtered_df['Arrondissement_de_résidence'].value_counts()
-        
-        # Create visualization
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            # Top 10 arrondissements bar chart
-            fig = px.bar(
-                x=arrond_counts.head(10).index,
-                y=arrond_counts.head(10).values,
-                title="Top 10 Arrondissements by Donor Count",
-                labels={"x": "Arrondissement", "y": "Number of Donors"},
-                color=arrond_counts.head(10).values,
-                color_continuous_scale="Viridis"
-            )
-            fig.update_layout(xaxis_tickangle=-45)
-            st.plotly_chart(fig, use_container_width=True)
-        
-        with col2:
-            # Display metrics
-            total_arronds = len(arrond_counts)
-            total_donors = len(filtered_df)
-            avg_donors = total_donors / total_arronds if total_arronds > 0 else 0
-            
-            st.metric(
-                "Total Arrondissements",
-                f"{total_arronds:,}",
-                f"Avg {avg_donors:.1f} donors per area"
-            )
-            
-            st.metric(
-                "Most Active Area",
-                arrond_counts.index[0],
-                f"{arrond_counts.iloc[0]:,} donors"
-            )
-            
-            st.metric(
-                "Coverage Rate",
-                f"{(total_arronds/len(filtered_df.Arrondissement_de_résidence.unique())*100):.1f}%",
-                "of total areas"
-            )
+        with st.spinner("Loading static map..."):
+            try:
+                # Load the Cameroon map shapefile
+                cameroon_map = gpd.read_file('data/processed/cmr_cities.zip')
+
+                # Create a figure and axis
+                fig, ax = plt.subplots(figsize=(12, 10))
+
+                # Plot base map
+                cameroon_map.plot(ax=ax, color='lightgrey')
+
+                # Create GeoDataFrame for donors
+                donors_geo = gpd.GeoDataFrame(
+                    map_data,  # Use already processed map_data
+                    geometry=gpd.points_from_xy(map_data.Longitude, map_data.Latitude)
+                )
+                donors_geo.crs = cameroon_map.crs
+
+                # Plot donor locations
+                donors_geo.plot(
+                    ax=ax,
+                    marker='o',
+                    color='red',
+                    markersize=5,
+                    label='Donors',
+                    alpha=0.6
+                )
+
+                # Customize plot
+                plt.title('Geographical Distribution of Blood Donors in Cameroon')
+                plt.legend()
+                plt.axis('equal')
+                ax.grid(True, linestyle='--', alpha=0.6)
+
+                # Add major city labels
+                major_cities = {
+                    'Yaoundé': (3.848, 11.5021),
+                    'Douala': (4.0511, 9.7679),
+                    'Bamenda': (5.9631, 10.1591),
+                    'Garoua': (9.3017, 13.3921),
+                    'Maroua': (10.5910, 14.3158)
+                }
+
+                for city, coords in major_cities.items():
+                    ax.annotate(
+                        city,
+                        xy=coords,
+                        xytext=(5, 5),
+                        textcoords='offset points',
+                        fontsize=8,
+                        bbox=dict(
+                            boxstyle='round,pad=0.5',
+                            fc='white',
+                            ec='gray',
+                            alpha=0.7
+                        )
+                    )
+
+                # Display map and metrics
+                col1, col2 = st.columns([3, 1])
+                with col1:
+                    st.pyplot(fig)
+                with col2:
+                    st.metric("Total Locations Mapped", len(donors_geo['Arrondissement_de_résidence'].unique()))
+                    st.metric("Donor Density", f"{len(donors_geo) / cameroon_map.geometry.area.sum():.2f} donors/km²")
+
+            except Exception as e:
+                st.error(f"Error creating static map: {str(e)}")
+                st.info("Please ensure geographic data and shapefiles are available")
 
     with tab3:
-        st.subheader("Quartier Analysis")
+        # Arrondissement analysis
+        st.subheader("Donor Distribution by Arrondissement")
         
-        # Allow user to select arrondissement
-        selected_arrond = st.selectbox(
-            "Select Arrondissement",
-            options=sorted(filtered_df['Arrondissement_de_résidence'].unique())
-        )
+        # Calculate arrondissement metrics
+        arrond_counts = filtered_df["Arrondissement_de_résidence"].value_counts()
+        top_10_arrond = arrond_counts.head(10)
         
-        # Filter for selected arrondissement
-        arrond_df = filtered_df[filtered_df['Arrondissement_de_résidence'] == selected_arrond]
+        # Create summary DataFrame
+        arrond_df = pd.DataFrame({
+            "Arrondissement": top_10_arrond.index,
+            "Donors": top_10_arrond.values,
+            "Percentage": (top_10_arrond.values / len(filtered_df) * 100).round(1)
+        })
         
-        # Analyze quartiers
-        quartier_counts = arrond_df['Quartier_de_Résidence'].value_counts()
-        
+        # Display metrics
         col1, col2 = st.columns(2)
         
         with col1:
-            # Quartier distribution visualization
+            # Bar chart
             fig = px.bar(
-                x=quartier_counts.head(10).index,
-                y=quartier_counts.head(10).values,
-                title=f"Top 10 Quartiers in {selected_arrond}",
-                labels={"x": "Quartier", "y": "Number of Donors"},
-                color=quartier_counts.head(10).values,
+                arrond_df,
+                x="Donors",
+                y="Arrondissement",
+                orientation='h',
+                title="Top 10 Arrondissements by Donor Count",
+                labels={"Donors": "Number of Donors"},
+                color="Donors",
                 color_continuous_scale="Viridis"
             )
-            fig.update_layout(xaxis_tickangle=-45)
             st.plotly_chart(fig, use_container_width=True)
         
         with col2:
-            # Quartier metrics
-            st.metric(
-                "Total Quartiers",
-                len(quartier_counts),
-                f"{len(arrond_df)} total donors"
-            )
-            
-            st.metric(
-                "Most Active Quartier",
-                quartier_counts.index[0],
-                f"{quartier_counts.iloc[0]} donors"
-            )
-            
-            # Detailed quartier table
+            # Detailed metrics table
             st.dataframe(
-                pd.DataFrame({
-                    "Quartier": quartier_counts.index,
-                    "Donors": quartier_counts.values,
-                    "Percentage": (quartier_counts.values / len(arrond_df) * 100).round(1)
-                }).head(10),
+                arrond_df,
                 column_config={
-                    "Quartier": "Quartier Name",
+                    "Arrondissement": "Arrondissement",
                     "Donors": st.column_config.NumberColumn(
                         "Number of Donors",
-                        help="Total donors from this quartier"
+                        help="Total number of donors from this arrondissement",
+                        format="%d"
                     ),
                     "Percentage": st.column_config.NumberColumn(
-                        "% of Arrondissement",
-                        help="Percentage of donors in the arrondissement",
+                        "% of Total Donors",
+                        help="Percentage of total donors from this arrondissement",
                         format="%.1f%%"
                     )
                 },
                 hide_index=True,
                 use_container_width=True
             )
+
+    with tab4:
+        # Quartier analysis
+        st.subheader("Quartier Distribution Analysis")
+        
+        # Arrondissement selector
+        selected_arrond = st.selectbox(
+            "Select Arrondissement to see Quartier distribution",
+            options=sorted(filtered_df["Arrondissement_de_résidence"].unique())
+        )
+        
+        # Filter data for selected arrondissement
+        arrond_data = filtered_df[filtered_df["Arrondissement_de_résidence"] == selected_arrond]
+        quartier_counts = arrond_data["Quartier_de_Résidence"].value_counts()
+        
+        # Create visualization
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Bar chart of quartier distribution
+            fig = px.bar(
+                x=quartier_counts.head(10).values,
+                y=quartier_counts.head(10).index,
+                orientation='h',
+                title=f"Top 10 Quartiers in {selected_arrond}",
+                labels={"x": "Number of Donors", "y": "Quartier"},
+                color=quartier_counts.head(10).values,
+                color_continuous_scale="Viridis"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        
+        with col2:
+            # Quartier metrics
+            quartier_metrics = pd.DataFrame({
+                "Quartier": quartier_counts.index,
+                "Donors": quartier_counts.values,
+                "Percentage": (quartier_counts.values / len(arrond_data) * 100).round(1)
+            })
+            
+            st.dataframe(
+                quartier_metrics,
+                column_config={
+                    "Quartier": "Quartier",
+                    "Donors": st.column_config.NumberColumn(
+                        "Number of Donors",
+                        help="Total number of donors from this quartier",
+                        format="%d"
+                    ),
+                    "Percentage": st.column_config.NumberColumn(
+                        "% of Arrondissement",
+                        help="Percentage of donors in this arrondissement",
+                        format="%.1f%%"
+                    )
+                },
+                hide_index=True,
+                use_container_width=True
+            )
+
 def create_health_conditions_analysis(filtered_df):
     """Analyze and visualize the impact of health conditions on eligibility"""
     st.header("Health Conditions Impact")
