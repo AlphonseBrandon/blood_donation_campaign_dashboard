@@ -367,30 +367,77 @@ def create_geographic_analysis(filtered_df):
             st.plotly_chart(fig, use_container_width=True)
 
     with tab2:
-        try:
-            with st.spinner("Loading static map..."):
-                # Use map_data instead of filtered_df
-                fig = px.scatter_mapbox(
-                    map_data,  # Use map_data that has coordinates
-                    lat='Latitude',
-                    lon='Longitude',
-                    color="Statut_d'éligibilité",
-                    title="Donor Distribution Map",
-                    mapbox_style="carto-positron",
-                    zoom=5,
-                    center={"lat": 3.848, "lon": 11.5021}
-                )
-                st.plotly_chart(fig, use_container_width=True)
+        st.subheader("Static Map Distribution")
+        
+        with st.spinner("Loading static map..."):
+            try:
+                # Load the Cameroon map shapefile
+                cameroon_map = gpd.read_file('data/processed/cmr_cities.zip')
 
-        except Exception as e:
-            st.error(f"Error creating static map: {str(e)}")
-            # Fallback to basic visualization
-            st.info("Displaying basic location metrics instead")
-            location_metrics = pd.DataFrame({
-                "Location": filtered_df["Arrondissement_de_résidence"].value_counts().index,
-                "Donors": filtered_df["Arrondissement_de_résidence"].value_counts().values
-            })
-            st.dataframe(location_metrics)
+                # Create a figure and axis
+                fig, ax = plt.subplots(figsize=(12, 10))
+
+                # Plot base map
+                cameroon_map.plot(ax=ax, color='lightgrey')
+
+                # Create GeoDataFrame for donors
+                donors_geo = gpd.GeoDataFrame(
+                    map_data,  # Use already processed map_data
+                    geometry=gpd.points_from_xy(map_data.Longitude, map_data.Latitude)
+                )
+                donors_geo.crs = cameroon_map.crs
+
+                # Plot donor locations
+                donors_geo.plot(
+                    ax=ax,
+                    marker='o',
+                    color='red',
+                    markersize=5,
+                    label='Donors',
+                    alpha=0.6
+                )
+
+                # Customize plot
+                plt.title('Geographical Distribution of Blood Donors in Cameroon')
+                plt.legend()
+                plt.axis('equal')
+                ax.grid(True, linestyle='--', alpha=0.6)
+
+                # Add major city labels
+                major_cities = {
+                    'Yaoundé': (3.848, 11.5021),
+                    'Douala': (4.0511, 9.7679),
+                    'Bamenda': (5.9631, 10.1591),
+                    'Garoua': (9.3017, 13.3921),
+                    'Maroua': (10.5910, 14.3158)
+                }
+
+                for city, coords in major_cities.items():
+                    ax.annotate(
+                        city,
+                        xy=coords,
+                        xytext=(5, 5),
+                        textcoords='offset points',
+                        fontsize=8,
+                        bbox=dict(
+                            boxstyle='round,pad=0.5',
+                            fc='white',
+                            ec='gray',
+                            alpha=0.7
+                        )
+                    )
+
+                # Display map and metrics
+                col1, col2 = st.columns([3, 1])
+                with col1:
+                    st.pyplot(fig)
+                with col2:
+                    st.metric("Total Locations Mapped", len(donors_geo['Arrondissement_de_résidence'].unique()))
+                    st.metric("Donor Density", f"{len(donors_geo) / cameroon_map.geometry.area.sum():.2f} donors/km²")
+
+            except Exception as e:
+                st.error(f"Error creating static map: {str(e)}")
+                st.info("Please ensure geographic data and shapefiles are available")
 
 
     with tab3:
