@@ -9,6 +9,8 @@ A comprehensive data analytics and visualization dashboard for blood donation ca
 
 Here is [the project link](https://testsiteg.pythonanywhere.com/) to check if you are eligible to donate blood. 
 
+Here is the dashboard overview: [Dashboard overview](../reports/Dashboard_Overview_French.md)
+
 ## 🎯 Project Overview
 
 The Blood Donation Campaign Dashboard addresses critical challenges in blood donation management by providing:
