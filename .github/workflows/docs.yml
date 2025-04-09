@@ -6,7 +6,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
 
 jobs:
   deploy:
@@ -29,22 +28,20 @@ jobs:
         run: |
           echo "PYTHONPATH=$PYTHONPATH:$(pwd)" >> $GITHUB_ENV
           
-      - name: Setup docs directory
+      - name: Build and Deploy
         run: |
-          # Ensure we're using docs from docs directory, not README
-          cd docs
-          if [ ! -d "docs" ]; then
-            mkdir -p docs
-          fi
+          # Delete gh-pages branch if it exists
+          git branch -D gh-pages || true
           
-          # Create main index if it doesn't exist
-          if [ ! -f "docs/index.md" ]; then
-            cp ../README.md docs/index.md
-          fi
-          
-      - name: Deploy docs
-        run: |
+          # Configure Git
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          cd docs  # Important: Run mkdocs from docs directory
-          mkdocs gh-deploy --force
+          
+          # Ensure correct directory structure
+          cd docs
+          
+          # Force rebuild site
+          rm -rf site
+          
+          # Deploy to GitHub Pages
+          mkdocs gh-deploy --force --clean

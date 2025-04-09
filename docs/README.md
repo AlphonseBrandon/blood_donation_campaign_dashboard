@@ -1,6 +1,0 @@
-
-
----
-
-
-    mkdocs serve
