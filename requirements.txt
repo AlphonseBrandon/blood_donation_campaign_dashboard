@@ -17,3 +17,8 @@ geopy==2.4.1
 requests==2.31.0
 python-dotenv==1.0.0
 rtree==1.1.0
+mkdocs==1.5.3
+mkdocs-material==9.4.6
+mkdocstrings==0.24.0
+mkdocstrings-python==1.7.3
+openpyxl==3.1.2
