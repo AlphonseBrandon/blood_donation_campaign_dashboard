@@ -15,7 +15,10 @@ Asides the dashboard, here are some extra features we added.
 - [Eligibility checker website](https://testsiteg.pythonanywhere.com/) to check if you are eligible to donate blood.
 - [Link donors to care center website](https://bd-carelink.onrender.com) Website to link eligible donors to care centers.
 
-Here is the dashboard overview: [Dashboard overview in french](../reports/Dashboard_Overview_French.md)
+Here is the dashboard overview: 
+- [Dashboard overview in English](/reports/Dashboard_Overview_English.md)
+- [Dashboard overview in French](/reports/Dashboard_Overview_French.md)
+
 
 ## 🎯 Project Overview
 
