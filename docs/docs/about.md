@@ -7,4 +7,4 @@
 Guidelines for contributing to the project.
 
 ## License
-Project license information.
+Project license information
