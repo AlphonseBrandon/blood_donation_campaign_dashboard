@@ -4,6 +4,7 @@ site_description: Documentation for Blood Donation Campaign Analytics Dashboard
 
 
 repo_url: https://github.com/AlphonseBrandon/blood_donation_campaign_dashboard
+site_url: https://AlphonseBrandon.github.io/blood_donation_campaign_dashboard/
 
 # Theme configuration
 theme:
