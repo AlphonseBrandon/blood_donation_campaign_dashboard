@@ -1,211 +1,210 @@
-# Blood Donation Campaign Report
+# Rapport de la Campagne de Don de Sang
 
-## How to Launch the Dashboard
+## Comment Lancer le Tableau de Bord
 
-### Steps to Launch the Dashboard
+### Étapes pour Lancer le Tableau de Bord
 
-1.  **Open a Code Editor**
-    Start by launching Visual Studio Code (VS Code).
+1.  **Ouvrir un Éditeur de Code**
+    Commencez par lancer Visual Studio Code (VS Code).
 
-2.  **Clone the Repository**
-    Open source control, and take clone repository
-    
-    When asked to input repository, input [https://github.com/AlphonseBrandon/blood_donation_campaign_dashboard](https://github.com/AlphonseBrandon/blood_donation_campaign_dashboard)
-    
-    Clone the repository, and voila!, you have the dashboard in your work space.
+2.  **Cloner le Dépôt**
+    Ouvrez le contrôle de source, et clonez le dépôt.
 
-    Navigate into the cloned directory:
+    Lorsque vous êtes invité à entrer le dépôt, entrez [https://github.com/AlphonseBrandon/blood_donation_campaign_dashboard](https://github.com/AlphonseBrandon/blood_donation_campaign_dashboard)
 
-    Next, open terminal, and making sure all required packages have been installed, run 
+    Clonez le dépôt, et voilà !, vous avez le tableau de bord dans votre espace de travail.
+
+    Naviguez dans le répertoire cloné :
+
+    Ensuite, ouvrez le terminal, et en vous assurant que tous les packages requis ont été installés, exécutez
 
     ```bash
     streamlit run src/dashboard.py
     ```
 
-    Access the Dashboard
+    Accéder au Tableau de Bord
 
-    After running the command, your default web browser should automatically open, displaying the dashboard. If it doesn't, you can manually navigate to http://localhost:8501.
+    Après avoir exécuté la commande, votre navigateur web par défaut devrait s'ouvrir automatiquement, affichant le tableau de bord. S'il ne s'ouvre pas, vous pouvez naviguer manuellement vers l'URL fournie par Streamlit.
 
-    Your dashboard should look something like this:
+    Votre tableau de bord devrait ressembler à ceci :
 
-    ![Dashboard](..\reports\figures\dashboard_images\home.PNG)
+    ![Tableau de Bord](../reports/figures/dashboard_images/home.PNG)
 
+## Aperçu du Tableau de Bord
 
-## Dashboard Overview
+Le Tableau de Bord de la Campagne de Don de Sang fournit une analyse complète des données de don de sang, permettant aux organisateurs de campagne de prendre des décisions éclairées. Le tableau de bord présente divers aspects des données de la campagne.
 
-The Blood Donation Campaign Dashboard provides a comprehensive analysis of blood donation data, allowing campaign organizers to make informed decisions. The dashboard features various visualizations that highlight donor demographics, campaign effectiveness, retention rates, and the impact of health conditions on donation eligibility. This enables a data-driven approach to enhance outreach and improve the overall effectiveness of blood donation campaigns.
+Nous avons le résumé suivant de nos donneurs
+![Résumé Total de la campagne](../reports/figures/dashboard_images/summary_of_entire_campaign.PNG)
 
-We have the folllowing summary of our donors
-![Total Summary of campaign](..\reports\figures\dashboard_images\summary_of_entire_campaign.PNG)
+Nous pouvons voir que, sur les 1 846 donneurs, l'âge moyen était de 31 ans, et le niveau moyen d'hémoglobine de 13,9 g/dL, donnant un pourcentage de taux d'éligibilité de 85,1 %.
+Ces résultats de résumé sont expliqués ci-dessous ;
 
-We can see that, out of the 1,846 donors, the average age was those of 31 years, and Average Hemoglobin level of 13.9g/dL, giving a percentage of 85.1% eligigbility rate. 
-This summary results is expantiated below;
+## 1. Profilage des Donneurs
 
-## 1. Donor Profiling
+Examinons maintenant les profils de nos différents donneurs, afin d'avoir une meilleure compréhension des données démographiques des personnes aptes au don de sang.
 
-Let us now look at the profiles of our various donors, so as to have more insight of the demographics of the persons suitable for blood donation.
+### 1.1 Donneurs par Ville Géographique
 
-### 1.1 Donor by Geographical Town
+Comprendre la répartition géographique des donneurs aide à identifier les zones clés pour les campagnes ciblées. Voici un résumé de la répartition des donneurs par emplacement géographique :
 
-Understanding the geographical distribution of donors helps identify key areas for targeted campaigns. Here is a summary of the distribution of donors as per the geographical location.
+![Résumé du Graphique des Villes Géographiques](../reports/figures/dashboard_images/summary_of_town_distribution.PNG)
 
-![summary of Geographical Town Chart](..\reports\figures\dashboard_images\summary_of_town_distribution.PNG)
+Le graphique montre que Douala est le principal contributeur au nombre de donneurs, avec 97,4 % des dons totaux provenant de cette ville. Cela met en évidence une zone concentrée pour les campagnes futures.
 
-The chart shows that Douala is the top contributor to donor numbers, with 97.4% of the total donations coming from this town. This highlights a concentrated area for potential campaigns, indicating where resources might be best allocated for maximum impact.
+Notre tableau de bord vous permet de basculer entre les villes et les quartiers, permettant aux organisateurs de campagne d'adapter les stratégies en fonction des données démographiques et des besoins spécifiques.
 
-Our dashboard gives you the ability to switch between towns, and quarters allowing campaign organizers to tailor strategies based on local donor demographics and behaviors. We shall now look at the campaign details in the quarter of Douala 3 for example.
+![Donneurs par Douala 3](../reports/figures/dashboard_images/douala.png)
 
-![Donor by douala 3](..\reports\figures\dashboard_images\douala.png)
+**Résumé des résultats :** D'après les résultats ci-dessus, nous voyons que les donneurs les plus nombreux (34) de Douala 3 proviennent de Yassa.
 
-**Summary of results:** From the results above, we see the highest donors (34) from Douala 3 are from Yassa.
+### 1.2 Donneurs par Groupes d'Âge
 
-### 1.2 Donor by Age Groups
+Nous examinerons ensuite la répartition par âge de nos donneurs. L'âge est une mesure cruciale pour comprendre quelles données démographiques sont les plus engagées dans le don de sang. En identifiant les groupes d'âge les plus actifs, nous pouvons cibler nos efforts de sensibilisation plus efficacement.
 
-We will then look at the age distribution of our donors. Age is a crucial metric for understanding which demographics are most engaged in blood donation. By identifying age groups that contribute the most, targeted outreach initiatives can be developed to encourage donations among a particular age group. 
+![Graphique des Donneurs par Groupes d'Âge](../reports/figures/dashboard_images/donor_per_age.png)
 
-![Donor_by_Age_Groups_Chart](..\reports\figures\dashboard_images\donor_per_age.png)
+**Résumé des résultats :** La majorité des donneurs se situent dans la tranche d'âge 26-35 ans, représentant 826 donneurs, ce qui indique une base solide pour les efforts de sensibilisation futurs.
 
-**Summary of results:** The majority of donors fall within the 26-35 age range, accounting for 826 donors, which indicates a strong base for outreach efforts targeted at  working-calss active youths. 
+### 1.3 Donneurs par Profession
 
-### 1.3 Donor by Profession
+Lorsque nous comprenons quelles professions sont les plus représentées parmi les donneurs, cela aidera à adapter les campagnes à des travailleurs spécifiques.
 
-When we understand which professions are most represented among donor, this will help tailor campaigns to specific workers.
+![Graphique des Donneurs par Profession](../reports/figures/dashboard_images/donor_per_profession.png)
 
-![Donor by Profession Chart](..\reports\figures\dashboard_images\donor_per_profession.png)
+**Résumé des résultats :** Le contexte professionnel des donneurs révèle que les étudiants constituent le segment le plus important, représentant 276 des donneurs totaux. Cette information est essentielle pour cibler les communications et les efforts de sensibilisation.
 
-**Summary of results:** The professional background of donors reveals that students constitute the largest segment, making up 276 of the total donors. This insight can help us to organize donation drives in educational institutions.
+### 1.4 Donneurs par Sexe
 
-### 1.4 Donor by Gender
+La dynamique des genres joue un rôle important dans les taux de don de sang.
 
-Gender dynamics play a significant role in blood donation rates. 
+![Graphique des Donneurs par Sexe](../reports/figures/dashboard_images/donor_per_gender.png)
 
-![Donor by Gender Chart](..\reports\figures\dashboard_images\donor_per_gender.png)
+**Résumé des résultats :** La répartition par sexe montre une prédominance des donneurs masculins, qui représentent 1 664 (90,1 %) du total. Les stratégies visant à accroître la participation des donneuses pourraient être bénéfiques.
 
-**Summary of results:** The gender breakdown shows a predominance of male donors, who represent 1664 (90.1%) of the total. Strategies to increase female participation could be beneficial, especially in targeting messaging that resonates with women. Most women are often confused because of restriction on periods, breastfeeding etc, which also limits the number of female donors.
+En conclusion, nous pouvons dire que le groupe d'âge le plus idéal était celui des 26-35 ans, la catégorie IMC typique étant le surpoids, et le sexe prédominant étant masculin, avec une hémoglobine moyenne de 13,9 g/dL.
 
-Conclusively, We can say the most ideal age group was those between 26-35 years, typical BMI category being surpoids, and predominant gender being Male, with the average hemoglobin being 14.0g/dL, of profession being students, for donation as shown below.
+![donneur_idéal](../reports/figures/dashboard_images/ideal_donor.PNG)
 
-![ideal_donor](..\reports\figures\dashboard_images\ideal_donor.PNG)
+## 2. Efficacité de la Campagne
 
-## 2. Campaign Effectiveness
+### 2.1 Efficacité par Âge et Sexe
 
-### 2.1 Effectiveness by Age and Gender
+En évaluant l'efficacité des campagnes par groupe d'âge, nous identifions les groupes d'âge les plus réceptifs aux efforts de sensibilisation.
 
-By evaluating the effectiveness of campaigns by age group, we identify which age groups are most responsive to outreach efforts. 
+![Graphique de l'Efficacité par Âge](../reports/figures/dashboard_images/campaign_effectiveness_by_age.png)
 
-![Effectiveness by Age Chart](..\reports\figures\dashboard_images\campaign_effectiveness_by_age.png)
+Efficacité de la campagne par Sexe
 
-Campaign effectiveness by Gender
+![Graphique de l'Efficacité par Sexe](../reports/figures/dashboard_images/campaign_effectiveness_by_gender.png)
 
-![Effectiveness by Gender Chart](..\reports\figures\dashboard_images\campaign_effectiveness_by_gender.png)
+**Résumé des résultats :** L'analyse indique que le groupe d'âge 26-35 ans a le nombre de dons le plus élevé, avec 826 donneurs provenant de ce groupe d'âge, donnant un taux de réussite de 44,7 %.
 
+### 2.2 Efficacité par Lieu
 
-**Summary of results:** The analysis indicates that the 26-35 age group has the highest number of donations as 826 donors came from this age group, giving a success rate of 86.2%, and the least being those of 56-65 years old. This suggest that the older one gets, the more likely they are to naturally be exposed to diseases like diabetes, cardiac arrest etc which makes them ineligible for blood donation. As per the gender, men show a more effective campaign with 1664 donors, at a 90.1% success rate.
+L'analyse géographique révèle les zones avec les taux de participation les plus élevés et les plus faibles. Ces informations sont essentielles pour l'allocation des ressources dans les campagnes futures.
 
-### 2.2 Effectiveness by Location
+![Graphique de l'Efficacité par Lieu](../reports/figures/dashboard_images/campaign_effectiveness_by_location.png)
 
-Geographic analysis reveals which areas have the highest and lowest participation rates. This information is vital for resource allocation in future campaigns. The chart below indicates how effective the campaign was in the various locations the campaign was carried out.
+**Résumé des résultats :** L'analyse géographique révèle que Douala est le lieu le plus efficace pour les campagnes, Douala affichant la contribution la plus élevée, 952 (91,3 %) aux dons totaux. Cela indique une forte concentration d'efforts de sensibilisation réussis dans cette ville.
 
-![Effectiveness by Location Chart](..\reports\figures\dashboard_images\campaign_effectiveness_by_location.png)
+### 2.3 Efficacité par Profession
 
-**Summary of results:** Geographic analysis reveals that Douala is the most effective location for campaigns, with Douala showing the highest contribution, 952(91.3%) to overall donations. About 14 donors did not precise their towns, and the least percentage of donors came from RAS, 6 donors, with a campaign effectiveness rate of zerol
+Lorsque nous examinons l'efficacité de la campagne par profession, nous obtenons les résultats suivants.
 
-### 2.3 Effectiveness by Profession
+![Graphique de l'Efficacité par Profession](../reports/figures/dashboard_images/campaign_effectiveness_by_profession.png)
 
-When we look at campaign effectiveness as per profession, we have the following results.
+**Résumé des résultats :** Les étudiants sont le groupe de donneurs le plus efficace, contribuant à 276 des dons totaux, donnant un taux d'efficacité de campagne de 100 %. Cela renforce la nécessité de campagnes ciblées sur les étudiants.
 
-![Effectiveness by Profession Chart](..\reports\figures\dashboard_images\campaign_effectiveness_by_profession.png)
+## 3. Rétention des Donneurs
 
-**Summary of results:** Students are the most effective donor group, contributing to 206 of total donations, giving a campaign effectiveness rate of 100%. This reinforces the need for student-focused outreach initiatives, such as partnerships with universities and colleges for more blood donation. Given that they indicated being unemployed, subsequent needs for employment can be made through the campaign.
+Dans cette section, nous examinons la probabilité qu'un donneur revienne pour un autre don, en fonction de ses données démographiques.
 
-## 3. Donor Retention
-In this section, we look at the probability of a donor coming back for donation once more, based on their demographics.
+### Résumé de la Rétention des Donneurs
 
-### Summary of Retention Donors
+Mesurer la rétention des donneurs est crucial pour comprendre le succès des campagnes dans le maintien de relations à long terme avec les donneurs. Les mesures de rétention fournissent des informations précieuses pour les futures stratégies de campagne.
 
-Measuring donor retention is crucial for understanding the success of campaigns in maintaining long-term relationships with donors. Retention metrics provide insights into how effectively campaigns engage and re-engage donors. From the figure below, we see that 1,060 donors were first timers, while 786 were returning donors, giving a retention rate of 42.6%.
+![Graphique du Résumé de la Rétention](../reports/figures/dashboard_images/sumary_of_donor_retention.PNG)
 
-![Retention Summary Chart](..\reports\figures\dashboard_images\sumary_of_donor_retention.PNG)
+**Donneurs Réguliers :** 786 (42,6 % des donneurs totaux)
+**Nouveaux Donneurs :** 1 060 (57,4 % des donneurs totaux)
+**Taux de Rétention Global :** 42,6 %
 
-**Repeating Donors:** 786 (42.6% of total donors)
-**First-Time Donors:** 1,060 (57.4% of total donors)
-**Overall Retention Rate:** 42.6%
+**Résumé des résultats :** Le taux de rétention de 42,6 % indique un niveau sain de donneurs réguliers, soulignant l'importance de maintenir l'engagement avec les nouveaux donneurs et de les fidéliser.
 
-**Summary of results:** The retention rate of 42.6% indicates a healthy level of return donors, signifying the importance of maintaining engagement with first-time donors and converting them into repeat contributors, and if eligible, this rate has the possibility of going higher.
+### 3.1 Rétention par Groupe d'Âge
 
-### 3.1 Retention by Age Group
+L'analyse des taux de rétention par groupe d'âge aide à identifier les groupes d'âge les plus susceptibles de revenir pour des dons futurs. Cela nous aidera à informer les stratégies ciblées pour améliorer les taux de rétention.
 
-Analyzing retention rates by age group helps identify which age group are more likely to return for future donations. This will help us inform targeted strategies to enhance donor engagement in that particular age group.
+![Graphique de la Rétention par Groupe d'Âge](../reports/figures/dashboard_images/donor_retention_age.png)
 
-![Retention by Age Group Chart](..\reports\figures\dashboard_images\donor_retention_age.png)
+**Résumé des résultats :** L'analyse montre que les groupes d'âge plus âgés (56-65 ans) ont un taux de rétention plus élevé de 60 %, ce qui suggère des stratégies d'engagement efficaces pour ces groupes.
 
-**Summary of results:** The analysis shows that older age groups (56-65) have a higher retention rate of 60%, suggesting effective engagement strategies within this demographic. This indicates that initiatives aimed at younger donors might need to be reinforced because eventhough they constitute the highest percentage of donors, their retention rate is low, meaning they often change their minds about donation.
+### 3.2 Rétention par Profession
 
-### 3.2 Retention by Profession
+Comprendre la rétention par profession donne un aperçu des groupes professionnels les plus susceptibles de revenir pour des dons supplémentaires. Étant donné que la majorité des donneurs étudiants ont un taux de rétention plus élevé, cela influence les stratégies futures.
 
-Understanding retention by profession provides insights into which professional groups are more likely to return for additional donations. Given that majority of the donors were students, the professions will focus on the employed as shown in the chart below.
+![Graphique de la Rétention par Profession](../reports/figures/dashboard_images/donor_retention_by_profession.png)
 
-![Retention by Profession Chart](..\reports\figures\dashboard_images\donor_retention_by_profession.png)
+**Résumé des résultats :** La figure ci-dessous montre notre rétention par profession. Nous pouvons voir que ceux qui travaillent dans le domaine médical, les responsables des ressources humaines et les enseignants ont des taux de rétention élevés, suggérant des stratégies d'engagement ciblées.
 
-**Summary of results:** The figure below shows our retention by profession. We can see that those in the medical field, human resource  managers, men of God, security etc have a 100% retention rate . The least represented were htraders, salon workers etc, indicating potential areas to enhance outreach amongst these professions.
+### 3.3 Rétention par Lieu
 
-### 3.3 Retention by Location
+L'évaluation des taux de rétention dans différents lieux géographiques permet de mieux comprendre où les campagnes réussissent ou échouent.
 
-Evaluating retention rates across different geographic locations allows for a better understanding of where campaigns are succeeding or struggling.
+![Graphique de la Rétention par Lieu](../reports/figures/dashboard_images/donor_retention_location.png)
 
-![Retention by Location Chart](..\reports\figures\dashboard_images\donor_retention_location.png)
+**Résumé des résultats :** Le graphique montre que Douala a le taux de rétention le plus élevé parmi les lieux, renforçant son importance dans les campagnes futures. Cela suggère que les stratégies de campagne devraient continuer à se concentrer sur cette région.
 
-**Summary of results:** The chart illustrates that Douala has the highest retention rate among locations, reinforcing its importance in future campaigns. This suggests that strategies working in Douala should be analyzed and possibly replicated in other areas, globally, as a 100% successful rate was found in locations that the donors did not mention.
+## 4. Impact des Conditions de Santé
 
-## 4. Health Conditions Impact
+### Résumé des Conditions de Santé
 
-### Summary of Health Conditions
+Les conditions de santé sont le facteur essentiel qui rend un donneur qualifié ou non pour le don. L'analyse des conditions de santé qui entraînent le report des donneurs est essentielle pour améliorer les taux d'éligibilité.
 
-Health conditions stand to be the essential factor that makes a donor qualified for donation or not. Analyzing health conditions that lead to donor deferrals is essential for understanding barriers to donation. Addressing these issues will improve overall donor eligibility.
+![Graphique du Résumé des Conditions de Santé](../reports/figures/dashboard_images/summary_of_health_conditions_impact.PNG)
 
-![Health Conditions Summary Chart](..\reports\figures\dashboard_images\summary_of_health_conditions_impact.PNG)
+**Résumé des résultats :** L'aperçu révèle que les conditions malsaines ont entraîné un taux de report de 21 % chez les donneurs potentiels, les problèmes les plus courants étant les petites infections et l'anémie.
 
-**Summary of results:** The overview reveals that unhealthy conditions led to a 21 deferral rate among potential donors, with the most common issues being people who suffer from cardiac arrest. This indicates a need for educational initiatives around health and wellness, as our retention is high amongst old participants, but they are few donors, and most suffer from cardiac diseases.
+### Résumé de l'Éligibilité Totale
 
-### Total Eligibility Summary
+Comprendre l'éligibilité des donneurs est crucial pour évaluer le bassin de donneurs potentiels. Outre les conditions de santé, d'autres facteurs rendent une personne inéligible au don. Le graphique ci-dessous fournit un aperçu de l'éligibilité globale.
 
-Understanding donor eligibility is crucial for assessing the potential donor pool. Asides health conditions, other factors makes one ineligible for donation. The chart below indicates the overall ineligibility stats of our donors
+![Graphique du Résumé de l'Éligibilité Totale](../reports/figures/dashboard_images/eligibility_summary.PNG)
 
-![Total Eligibility Summary Chart](..\reports\figures\dashboard_images\eligibility_summary.PNG)
+**Donneurs Totaux Éligibles :** 1 571 (85,1 % du total)
+**Donneurs Totaux Inéligibles :** 275 (14,9 % du total)
+**Taux d'Éligibilité Global :** 85,1 %
 
-**Total Eligible Donors:** 1,571 (85.1% of total)
-**Total Ineligible Donors:** 275 (14.9% of total)
-**Overall Eligibility Rate:** 85.1%
+**Résumé des résultats :** La majorité des donneurs sont éligibles au don de sang, ce qui indique un bassin de donneurs généralement sain et suggère que les efforts de sensibilisation peuvent se concentrer sur les raisons de l'inéligibilité pour améliorer ces taux.
 
-**Summary of results:** The majority of donors are eligible to donate blood, indicating a generally healthy donor pool and suggesting that outreach efforts can be focused on educating ineligible donors, to make the pool a complete 100%.
+### 4.1 Éligibilité par Âge
 
-### 4.1 Eligibility by Age
+La répartition des taux d'éligibilité par groupe d'âge aide à identifier les groupes d'âge les plus susceptibles de répondre aux critères de don.
 
-Breaking down eligibility rates by age group helps identify which age group are most likely to meet donation criteria.
+![Graphique de l'Éligibilité par Âge](../reports/figures/dashboard_images/eligibility_by_age.png)
 
-![Eligibility by Age Chart](..\reports\figures\dashboard_images\eligibility_by_age.png)
+**Résumé des résultats :** L'analyse montre que les groupes d'âge plus âgés, 56-65 ans, ont un taux d'éligibilité plus faible, ce qui suggère que les problèmes de santé deviennent plus fréquents avec l'âge.
 
-**Summary of results:** The analysis shows that older age groups, 56-65 years, have a lower eligibility rate, suggesting that health issues become more prevalent with age. This indicates a need for targeted health interventions for older populations. The most eligible age group were those of 36-45 years.
+### 4.2 Éligibilité par IMC
 
-### 4.2 Eligibility by BMI
+L'examen de l'éligibilité en fonction des catégories d'IMC donne un aperçu de la façon dont les mesures de santé influencent l'éligibilité des donneurs. L'indice de masse corporelle d'une personne est une mesure clé de l'éligibilité.
 
-Examining eligibility based on BMI categories provides insights into how health metrics influence donor eligibility. The Body Mass index of an individual talks alot about their lifestyle, and so, this can help know how to target campaigns based on a particular lifestyle of persons.
+![Graphique de l'Éligibilité par IMC](../reports/figures/dashboard_images/eligibility_by_BMI.png)
 
-![Eligibility by BMI Chart](..\reports\figures\dashboard_images\eligibility_by_BMI.png)
+**Résumé des résultats :** La figure indique que les personnes de la catégorie IMC "Normal" ont les taux d'éligibilité les plus élevés, tandis que celles classées comme "Obèses" montrent des taux d'éligibilité plus faibles.
 
-**Summary of results:** The figure indicates that individuals in the "Normal" BMI category have the highest eligibility rates, while those classified as "Obese" show significantly lower eligibility, and there was no one who was severely obesed. This can only reinforces the importance of promoting healthy lifestyles among potential donors.
+## Données Brutes et Menu de Navigation
 
-## Raw Data and Navigation Menu
+Le tableau de bord fournit également un accès aux données brutes pour une analyse plus approfondie et une compréhension de nos résultats.
 
-The dashboard also provides access to raw data for deeper analysis and understanding of our results. 
+![données_brutes](../reports/figures/dashboard_images/raw_data.PNG)
 
-![raw_data](..\reports\figures\dashboard_images\raw_data.PNG)
+## Barre de menu
+Un menu de navigation permet aux utilisateurs de tester leur éligibilité en fonction des mesures fournies, ce qui rend notre tableau de bord flexible et interactif. Ceci afin d'améliorer l'expérience utilisateur et de fournir des informations utiles rapidement.
 
-## Menu bar
-A navigation menu allows users to test for their eligibility based on the provided metrics, allowing our dashboard to be flexible and interactive. This is to enhance the user experience and facilitate the usage of our dashboard in different scenarios.
+![vérifier_éligibilité](../reports/figures/dashboard_images/check_eligibility.PNG)
 
-![check_eligibility](..\reports\figures\dashboard_images\check_eligibility.PNG)
-
-Which takes you to the API for eligibility checking.
+Ce qui vous amène à l'API pour la vérification de l'éligibilité. 
 
 Check your eligibility using the link: [check_eligibility](../https://testsiteg.pythonanywhere.com/)
