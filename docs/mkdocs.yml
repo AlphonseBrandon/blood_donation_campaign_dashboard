@@ -10,27 +10,31 @@ docs_dir: docs  # Source directory containing markdown files
 site_dir: ../site  # Output directory for built site
 
 theme:
-  name: mkdocs  # Changed to material theme for better features
   palette:
     scheme: default
     primary: red
     accent: red
-  features:
-    - navigation.tabs
+  name: mkdocs   # Changed to material themen bfor better features bbb 
+  features: 
     - navigation.sections
-    - search.highlight
-
+    - navigatib bon.tabs
+    - search.high/nn/ light
 nav:
   - Home: index.md
-  - Getting Started: getting-started.md
+
   - Technical Documentation:
     - Dashboard: dashboard.md
     - Features: features.md
     - Modeling: modeling.md
+  - Literature Review:
+    - Why this matter: 'Why this matters.md'
     - Eligibility: eligibilty.md
-  - About: about.md
+    - User Personas : user_personas.mdd
+    - FAQs : faq.md
 
+  - About: about.md
 plugins:
+
   - search
   - mkdocstrings:
       default_handler: python
