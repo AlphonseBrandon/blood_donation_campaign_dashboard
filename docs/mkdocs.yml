@@ -43,7 +43,7 @@ plugins:
       handlers:
         python:
           # Update path to point to src directory
-          paths: [../src]
+          paths: [../blood_donation_campaign_dashboard/src]
           options:
             show_source: true
             show_root_heading: true
