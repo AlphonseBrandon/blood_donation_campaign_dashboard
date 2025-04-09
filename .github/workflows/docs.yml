@@ -24,4 +24,4 @@ jobs:
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-          mkdocs gh-deploy --force --config-file docs/mkdocs.yml --remote-branch gh-pages --remote-name origin --token $GH_PAT
+          mkdocs gh-deploy --force --config-file docs/mkdocs.yml --remote-branch gh-pages --remote-name origin
