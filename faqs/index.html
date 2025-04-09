@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="ABO Team">
+        <link rel="canonical" href="https://AlphonseBrandon.github.io/blood_donation_campaign_dashboard/faqs/">
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>FAQs - Blood Donation Campaign Dashboard</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet">
+        <link href="../stylesheets/extra.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">Blood Donation Campaign Dashboard</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Technical Documentation</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../dashboard/" class="dropdown-item">Dashboard</a>
+</li>
+                                    
+<li>
+    <a href="../features/" class="dropdown-item">Features</a>
+</li>
+                                    
+<li>
+    <a href="../modeling/" class="dropdown-item">Modeling</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Literature Review</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../Why%20this%20matters/" class="dropdown-item">Why this matters</a>
+</li>
+                                    
+<li>
+    <a href="../Eligibility/" class="dropdown-item">Eligibility</a>
+</li>
+                                    
+<li>
+    <a href="../user_personas/" class="dropdown-item">User Personas</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">FAQs</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../about/" class="nav-link">About</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../user_personas/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../about/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/AlphonseBrandon/blood_donation_campaign_dashboard/edit/master/docs/faqs.md" class="nav-link"><i class="fa-brands fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#frequently-asked-questions-faqs" class="nav-link">Frequently Asked Questions (FAQs)</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#1-how-do-i-interpret-the-donor-retention-heatmap" class="nav-link">1. How do I interpret the donor retention heatmap?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#2-what-should-i-do-if-a-region-has-low-donor-turnout" class="nav-link">2. What should I do if a region has low donor turnout?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#3-how-can-i-improve-donor-retention-rates" class="nav-link">3. How can I improve donor retention rates?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#4-how-do-i-know-which-recruitment-campaigns-are-most-effective" class="nav-link">4. How do I know which recruitment campaigns are most effective?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#5-what-should-i-do-if-an-area-has-high-donor-registration-but-low-turnout" class="nav-link">5. What should I do if an area has high donor registration but low turnout?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#6-how-can-i-use-demographic-data-to-improve-donor-engagement" class="nav-link">6. How can I use demographic data to improve donor engagement?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#7-how-do-i-prevent-blood-shortages-in-hospitals" class="nav-link">7. How do I prevent blood shortages in hospitals?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#8-what-should-i-do-if-i-receive-a-high-risk-blood-shortage-alert" class="nav-link">8. What should I do if I receive a “High-Risk Blood Shortage” alert?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#9-how-do-i-track-the-success-of-a-donation-drive" class="nav-link">9. How do I track the success of a donation drive?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#10-how-can-i-identify-and-support-high-value-donors" class="nav-link">10. How can I identify and support high-value donors?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#11-what-if-a-donation-center-is-underperforming" class="nav-link">11. What if a donation center is underperforming?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#12-how-do-i-handle-inactive-donors" class="nav-link">12. How do I handle inactive donors?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#13-how-can-i-plan-donation-drives-based-on-seasonal-trends" class="nav-link">13. How can I plan donation drives based on seasonal trends?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#14-how-do-i-coordinate-between-hospitals-and-blood-banks" class="nav-link">14. How do I coordinate between hospitals and blood banks?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#15-what-if-an-emergency-or-disaster-occurs" class="nav-link">15. What if an emergency or disaster occurs?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="frequently-asked-questions-faqs">Frequently Asked Questions (FAQs)</h1>
+<p>The <em>Blood Donation Campaign Dashboard</em> provides key insights into donor engagement, blood supply trends, and campaign effectiveness. This FAQs section helps users <em>understand, interpret, and take action based on dashboard data</em>.  </p>
+<hr />
+<h2 id="1-how-do-i-interpret-the-donor-retention-heatmap">1. How do I interpret the donor retention heatmap?</h2>
+<p>The <em>donor retention heatmap</em> highlights donor consistency across different regions:<br />
+- <em>Green</em> – High retention: Regular, repeat donors.<br />
+- <em>Yellow</em> – Moderate retention: Some repeat donors, some drop-offs.<br />
+- <em>Red</em> – Low retention: Donors donate once and do not return.  </p>
+<h3 id="what-actions-should-i-take"><em>What actions should I take?</em></h3>
+<ul>
+<li><em>Low-retention areas (Red):</em>  </li>
+<li>Increase re-engagement campaigns (follow-up calls, SMS reminders).  </li>
+<li>Provide donor incentives (health check-ups, recognition programs).  </li>
+<li>Address common concerns (fear, misconceptions about donation).  </li>
+<li><em>Moderate-retention areas (Yellow):</em>  </li>
+<li>Strengthen community-based donation drives.  </li>
+<li>Improve donor experience with streamlined registration.  </li>
+<li><em>High-retention areas (Green):</em>  </li>
+<li>Expand recruitment in these regions to leverage committed donors.  </li>
+</ul>
+<hr />
+<h2 id="2-what-should-i-do-if-a-region-has-low-donor-turnout">2. What should I do if a region has low donor turnout?</h2>
+<p>A <em>low donor turnout</em> means fewer people are donating in a particular area.  </p>
+<h3 id="what-actions-should-i-take_1"><em>What actions should I take?</em></h3>
+<ul>
+<li>Analyze the cause: Use <em>demographic and feedback data</em> to understand barriers (e.g., lack of awareness, accessibility issues).  </li>
+<li>Increase awareness: Organize <em>workplace &amp; school donation drives</em> to reach new donors.  </li>
+<li>Improve accessibility: Set up <em>mobile donation units</em> in underserved locations.  </li>
+</ul>
+<hr />
+<h2 id="3-how-can-i-improve-donor-retention-rates">3. How can I improve donor retention rates?</h2>
+<p>Donor retention refers to <em>how many first-time donors return for future donations</em>.  </p>
+<h3 id="what-actions-should-i-take_2"><em>What actions should I take?</em></h3>
+<ul>
+<li><em>Implement automated reminders</em> for repeat donations.  </li>
+<li><em>Recognize loyal donors</em> with appreciation programs.  </li>
+<li><em>Address common drop-off reasons</em> by surveying past donors.  </li>
+</ul>
+<hr />
+<h2 id="4-how-do-i-know-which-recruitment-campaigns-are-most-effective">4. How do I know which recruitment campaigns are most effective?</h2>
+<p>The dashboard tracks <em>conversion rates</em> from different outreach methods (e.g., SMS, social media, community events).  </p>
+<h3 id="what-actions-should-i-take_3"><em>What actions should I take?</em></h3>
+<ul>
+<li>Identify <em>top-performing channels</em> and focus budget/resources on them.  </li>
+<li>Test different messaging approaches (e.g., testimonials vs. statistics).  </li>
+<li>Use <em>A/B testing</em> to optimize engagement strategies.  </li>
+</ul>
+<hr />
+<h2 id="5-what-should-i-do-if-an-area-has-high-donor-registration-but-low-turnout">5. What should I do if an area has high donor registration but low turnout?</h2>
+<p>This means <em>many people sign up but fail to show up for donation appointments</em>.  </p>
+<h3 id="what-actions-should-i-take_4"><em>What actions should I take?</em></h3>
+<ul>
+<li><em>Send timely reminders</em> via email, SMS, and phone calls.  </li>
+<li><em>Make donation locations convenient</em> (e.g., near workplaces, schools).  </li>
+<li><em>Identify barriers</em> (e.g., fear, misinformation) and address them in outreach.  </li>
+</ul>
+<hr />
+<h2 id="6-how-can-i-use-demographic-data-to-improve-donor-engagement">6. How can I use demographic data to improve donor engagement?</h2>
+<p>The dashboard provides <em>age, gender, and location-based donor insights</em> to help personalize engagement.  </p>
+<h3 id="what-actions-should-i-take_5"><em>What actions should I take?</em></h3>
+<ul>
+<li><em>Target younger donors (18–30 years old)</em> through social media and university partnerships.  </li>
+<li><em>Engage corporate organizations</em> to encourage workplace donations.  </li>
+<li><em>Personalize communication strategies</em> based on donor preferences.  </li>
+</ul>
+<hr />
+<h2 id="7-how-do-i-prevent-blood-shortages-in-hospitals">7. How do I prevent blood shortages in hospitals?</h2>
+<p>Blood shortages occur when <em>demand exceeds supply</em>.  </p>
+<h3 id="what-actions-should-i-take_6"><em>What actions should I take?</em></h3>
+<ul>
+<li><em>Monitor hospital inventory levels</em> in real-time.  </li>
+<li><em>Prioritize collection of rare blood types</em> that are frequently in demand.  </li>
+<li><em>Encourage donors to schedule donations before expected shortages</em>.  </li>
+</ul>
+<hr />
+<h2 id="8-what-should-i-do-if-i-receive-a-high-risk-blood-shortage-alert">8. What should I do if I receive a “High-Risk Blood Shortage” alert?</h2>
+<p>This alert is triggered when <em>blood supply levels drop below a critical threshold</em>.  </p>
+<h3 id="what-actions-should-i-take_7"><em>What actions should I take?</em></h3>
+<ul>
+<li><em>Trigger an emergency donation drive</em> through SMS/email campaigns.  </li>
+<li><em>Prioritize high-frequency donors</em> for immediate outreach.  </li>
+<li><em>Coordinate with nearby hospitals and blood banks</em> for supply redistribution.  </li>
+</ul>
+<hr />
+<h2 id="9-how-do-i-track-the-success-of-a-donation-drive">9. How do I track the success of a donation drive?</h2>
+<p>The dashboard provides <em>real-time donation drive analytics</em>, including:<br />
+- <em>Donor turnout rates</em> per campaign.<br />
+- <em>Conversion rates</em> (registered vs. actual donors).<br />
+- <em>Engagement trends</em> (repeat vs. first-time donors).  </p>
+<h3 id="what-actions-should-i-take_8"><em>What actions should I take?</em></h3>
+<ul>
+<li>Compare <em>pre-drive and post-drive participation</em> to measure effectiveness.  </li>
+<li>Identify <em>high-performing locations</em> and replicate successful strategies.  </li>
+<li>Adjust future campaigns based on <em>donor feedback and engagement patterns</em>.  </li>
+</ul>
+<hr />
+<h2 id="10-how-can-i-identify-and-support-high-value-donors">10. How can I identify and support high-value donors?</h2>
+<p>High-value donors are <em>frequent donors or those with rare blood types</em>.  </p>
+<h3 id="what-actions-should-i-take_9"><em>What actions should I take?</em></h3>
+<ul>
+<li><em>Recognize and reward repeat donors</em> through exclusive appreciation events.  </li>
+<li><em>Send urgent alerts</em> to rare blood type donors during shortages.  </li>
+<li><em>Offer flexible scheduling</em> for frequent donors.  </li>
+</ul>
+<hr />
+<h2 id="11-what-if-a-donation-center-is-underperforming">11. What if a donation center is underperforming?</h2>
+<p>An underperforming donation center has <em>low donor turnout and inefficient operations</em>.  </p>
+<h3 id="what-actions-should-i-take_10"><em>What actions should I take?</em></h3>
+<ul>
+<li><em>Analyze donor feedback</em> to identify issues (e.g., long wait times, accessibility).  </li>
+<li><em>Adjust operating hours</em> based on peak donation trends.  </li>
+<li><em>Increase promotion efforts</em> in the surrounding community.  </li>
+</ul>
+<hr />
+<h2 id="12-how-do-i-handle-inactive-donors">12. How do I handle inactive donors?</h2>
+<p>Inactive donors are individuals who have <em>not donated in the expected timeframe</em>.  </p>
+<h3 id="what-actions-should-i-take_11"><em>What actions should I take?</em></h3>
+<ul>
+<li><em>Send personalized re-engagement messages</em>.  </li>
+<li><em>Offer incentives</em> such as free health screenings or loyalty programs.  </li>
+<li><em>Identify inactivity reasons</em> and address concerns (e.g., myths, misinformation).  </li>
+</ul>
+<hr />
+<h2 id="13-how-can-i-plan-donation-drives-based-on-seasonal-trends">13. How can I plan donation drives based on seasonal trends?</h2>
+<p>Blood donation follows <em>seasonal patterns</em>, with dips during holidays and exam periods.  </p>
+<h3 id="what-actions-should-i-take_12"><em>What actions should I take?</em></h3>
+<ul>
+<li><em>Increase donor engagement before expected declines</em>.  </li>
+<li><em>Encourage corporate and school drives</em> when regular donors are less available.  </li>
+<li><em>Monitor previous seasonal trends</em> to plan for future shortages.  </li>
+</ul>
+<hr />
+<h2 id="14-how-do-i-coordinate-between-hospitals-and-blood-banks">14. How do I coordinate between hospitals and blood banks?</h2>
+<p>The dashboard enables <em>real-time visibility into supply levels across hospitals and blood banks</em>.  </p>
+<h3 id="what-actions-should-i-take_13"><em>What actions should I take?</em></h3>
+<ul>
+<li><em>Set automated low-stock alerts</em> for hospitals.  </li>
+<li><em>Ensure regular communication</em> between blood banks and hospitals.  </li>
+<li><em>Use demand forecasting tools</em> to prevent stock imbalances.  </li>
+</ul>
+<hr />
+<h2 id="15-what-if-an-emergency-or-disaster-occurs">15. What if an emergency or disaster occurs?</h2>
+<p>The dashboard includes <em>emergency response tools</em> for disaster scenarios.  </p>
+<h3 id="what-actions-should-i-take_14"><em>What actions should I take?</em></h3>
+<ul>
+<li><em>Trigger emergency donor mobilization alerts</em> in affected areas.  </li>
+<li><em>Coordinate logistics</em> to ensure blood is delivered where needed.  </li>
+<li><em>Engage disaster relief organizations</em> for additional support.  </li>
+</ul>
+<hr />
+<p>The <em>Blood Donation Campaign Dashboard</em> helps stakeholders <em>translate insights into real-world actions</em>, ensuring:<br />
+- <em>Smoother donor engagement and retention</em>.<br />
+- <em>More efficient hospital blood supply management</em>.<br />
+- <em>Faster response to shortages and emergencies</em>.  </p>
+<p>For additional support, refer to the <em>User Guide</em> or contact your <em>system administrator</em>.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

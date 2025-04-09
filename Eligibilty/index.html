@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="ABO Team">
+        <link rel="canonical" href="https://AlphonseBrandon.github.io/blood_donation_campaign_dashboard/Eligibilty/">
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Blood Donation Eligibility Criteria - Blood Donation Campaign Dashboard</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet">
+        <link href="../stylesheets/extra.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">Blood Donation Campaign Dashboard</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Technical Documentation</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../dashboard/" class="dropdown-item">Dashboard</a>
+</li>
+                                    
+<li>
+    <a href="../features/" class="dropdown-item">Features</a>
+</li>
+                                    
+<li>
+    <a href="../modeling/" class="dropdown-item">Modeling</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Literature Review</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../Why%20this%20matters/" class="dropdown-item">Why this matters</a>
+</li>
+                                    
+<li>
+    <a href="../Eligibility/" class="dropdown-item">Eligibility</a>
+</li>
+                                    
+<li>
+    <a href="../user_personas/" class="dropdown-item">User Personas</a>
+</li>
+                                    
+<li>
+    <a href="../faqs/" class="dropdown-item">FAQs</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../about/" class="nav-link">About</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/AlphonseBrandon/blood_donation_campaign_dashboard/edit/master/docs/Eligibilty.md" class="nav-link"><i class="fa-brands fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#blood-donation-eligibility-criteria" class="nav-link">Blood Donation Eligibility Criteria</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#overview" class="nav-link">Overview</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#introduction" class="nav-link">Introduction</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#1-demographic-eligibility" class="nav-link">1. Demographic Eligibility</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#2-medical-eligibility" class="nav-link">2. Medical Eligibility</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#3-non-medical-eligibility" class="nav-link">3. Non-Medical Eligibility</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#conclusion" class="nav-link">Conclusion</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#references" class="nav-link">References</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="blood-donation-eligibility-criteria">Blood Donation Eligibility Criteria</h1>
+<h2 id="overview">Overview</h2>
+<p>Blood donation is a life-saving act that requires <em>strict eligibility criteria</em> to ensure the safety of both donors and recipients. These criteria, established by organizations such as the <em>World Health Organization (WHO, 2012), the American Red Cross (n.d.), the American Association of Blood Banks (AABB, n.d.), and national health services (NHS, n.d.)</em>, help prevent health risks and ensure the integrity of the blood supply.  </p>
+<hr />
+<h2 id="introduction">Introduction</h2>
+<p>To maintain a safe and sustainable blood supply, donors must meet <em>specific health, demographic, and lifestyle requirements</em>. These standards help:<br />
+1. <em>Protect donor health</em> by ensuring they can safely tolerate blood loss.<br />
+2. <em>Prevent disease transmission</em> by screening for infections and medical conditions.<br />
+3. <em>Maintain blood quality</em> by ensuring the suitability of donations (WHO, 2012).  </p>
+<p>This document outlines <em>who is eligible</em> to donate, categorizing conditions into:<br />
+- <em>Demographic eligibility</em><br />
+- <em>Medical eligibility (permanent and temporary deferrals)</em><br />
+- <em>Non-medical eligibility (lifestyle &amp; exposure risks)</em>  </p>
+<hr />
+<h2 id="1-demographic-eligibility">1. Demographic Eligibility</h2>
+<ul>
+<li><em>Age:</em> 18–65 years (exceptions apply for younger donors with parental consent or older donors in good health) (WHO, 2012).  </li>
+<li><em>Weight:</em> Minimum <em>50 kg (110 lbs)</em> to ensure adequate blood volume (American Red Cross, n.d.).  </li>
+<li><em>Donation Frequency:</em>  </li>
+<li>Whole blood: Every <em>8–12 weeks</em> (56 days for men, 84 days for women) (AABB, n.d.).  </li>
+<li>Platelets &amp; Plasma: Every <em>7–14 days</em>, depending on collection method (NHS, n.d.).  </li>
+</ul>
+<hr />
+<h2 id="2-medical-eligibility">2. Medical Eligibility</h2>
+<h3 id="21-permanent-deferral-lifetime-ineligibility"><em>2.1 Permanent Deferral (Lifetime Ineligibility)</em></h3>
+<p>These conditions pose a <em>high or long-term risk</em> to donor and recipient safety:<br />
+- <em>Infectious Diseases:</em><br />
+  - HIV/AIDS, Hepatitis B/C (WHO, 2012).<br />
+  - Creutzfeldt–Jakob Disease (CJD), Chagas disease, Babesiosis (AABB, n.d.).<br />
+- <em>Chronic Illnesses:</em><br />
+  - <em>Severe cardiovascular conditions</em> (e.g., history of heart attack, stroke) (NHS, n.d.).<br />
+  - <em>Advanced kidney disease, insulin-dependent diabetes with complications</em> (WHO, 2012).<br />
+  - <em>Neurological disorders</em> (e.g., multiple sclerosis, dementia) (American Red Cross, n.d.).<br />
+- <em>Cancer:</em><br />
+  - Blood cancers (e.g., leukemia, lymphoma) → Permanent deferral (WHO, 2012).<br />
+  - Other cancers require <em>5 years in remission</em> before eligibility (AABB, n.d.).<br />
+- <em>Blood Disorders:</em><br />
+  - Sickle cell disease, hemophilia requiring clotting factors (NHS, n.d.).<br />
+- <em>Autoimmune Disorders:</em><br />
+  - Lupus, severe immunodeficiencies (WHO, 2012).  </p>
+<hr />
+<h3 id="22-temporary-deferral-short-term-ineligibility"><em>2.2 Temporary Deferral (Short-Term Ineligibility)</em></h3>
+<p>Some conditions allow donation <em>after a recovery period</em>:<br />
+- <em>Acute Illnesses &amp; Infections:</em><br />
+  - Flu, fever, gastroenteritis → <em>Wait 14 days after full recovery</em> (WHO, 2012).<br />
+  - Malaria risk → <em>Wait 6–12 months</em> after exposure (NHS, n.d.).<br />
+- <em>Vaccinations:</em><br />
+  - Routine vaccines (e.g., flu, tetanus) → <em>48 hours deferral</em> (AABB, n.d.).<br />
+  - Live virus vaccines (e.g., measles, hepatitis B) → <em>Up to 4 weeks</em> (WHO, 2012).<br />
+- <em>Recent Surgeries &amp; Medical Procedures:</em><br />
+  - <em>Minor surgeries (dental work, laparoscopic procedures)</em> → Wait <em>1–4 weeks</em> (American Red Cross, n.d.).<br />
+  - <em>Major surgeries, blood transfusions</em> → Wait <em>6–12 months</em> (NHS, n.d.).<br />
+- <em>Pregnancy &amp; Breastfeeding:</em><br />
+  - <em>Pregnant individuals</em> → Deferred until <em>6 months post-delivery</em> (WHO, 2012).<br />
+  - <em>Recent miscarriage/abortion</em> → Deferred <em>up to 6 months</em> (AABB, n.d.).<br />
+- <em>Low Hemoglobin (Anemia):</em><br />
+  - Temporary deferral until levels normalize (American Red Cross, n.d.).  </p>
+<hr />
+<h2 id="3-non-medical-eligibility">3. Non-Medical Eligibility</h2>
+<h3 id="31-high-risk-behaviors-may-cause-permanent-or-temporary-deferral"><em>3.1 High-Risk Behaviors</em> (May Cause Permanent or Temporary Deferral)</h3>
+<ul>
+<li><em>Intravenous drug use</em> → Permanent deferral (WHO, 2012).  </li>
+<li><em>Sexual Behavior:</em>  </li>
+<li>High-risk sexual activity → <em>3–12 month deferral</em>, depending on national policies (AABB, n.d.).  </li>
+</ul>
+<h3 id="32-lifestyle-exposure-risks"><em>3.2 Lifestyle &amp; Exposure Risks</em></h3>
+<ul>
+<li><em>Tattooing, Piercing, or Acupuncture:</em>  </li>
+<li>Performed in an unregulated facility → <em>12-month deferral</em> (WHO, 2012).  </li>
+<li>In a licensed facility → <em>May require 4–6 month waiting period</em> (NHS, n.d.).  </li>
+<li><em>Recent Travel to Malaria-Endemic Areas:</em>  </li>
+<li>Deferral <em>6–12 months</em>, depending on exposure risk (WHO, 2012).  </li>
+<li><em>Recent Incarceration or Exposure to High-Risk Environments:</em>  </li>
+<li>Temporary deferral until risk assessment is completed (American Red Cross, n.d.).  </li>
+</ul>
+<hr />
+<h2 id="conclusion">Conclusion</h2>
+<p>Blood donation is a critical resource for healthcare, but <em>donor eligibility is essential for safety. Strict guidelines ensure donations are </em><em>free from infectious risks</em> and that <em>donors remain healthy</em> after giving blood. Individuals unsure of their eligibility should consult <em>local blood donation services</em> for specific policies (WHO, 2012).  </p>
+<hr />
+<h2 id="references">References</h2>
+<ul>
+<li>World Health Organization. (2012). Blood donor selection: Guidelines on assessing donor suitability for blood donation. WHO.  </li>
+<li>World Health Organization. (n.d.). WHO guidelines on blood transfusion safety. Retrieved from <a href="https://www.who.int/publications/i/item/9789241595411">https://www.who.int/publications/i/item/9789241595411</a>  </li>
+<li>American Red Cross. (n.d.). Blood donation eligibility requirements. Retrieved from <a href="https://www.redcrossblood.org/donate-blood/how-to-donate/eligibility-requirements.html">https://www.redcrossblood.org/donate-blood/how-to-donate/eligibility-requirements.html</a>  </li>
+<li>AABB. (n.d.). Standards for blood collection. American Association of Blood Banks. Retrieved from <a href="https://www.aabb.org/">https://www.aabb.org/</a>  </li>
+<li>National Health Service. (n.d.). Blood donation guidelines. Retrieved from <a href="https://www.nhs.uk/blood-donation/">https://www.nhs.uk/blood-donation/</a></li>
+</ul></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="ABO Team">
+        <link rel="canonical" href="https://AlphonseBrandon.github.io/blood_donation_campaign_dashboard/Eligibility/">
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Eligibility - Blood Donation Campaign Dashboard</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet">
+        <link href="../stylesheets/extra.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">Blood Donation Campaign Dashboard</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Technical Documentation</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../dashboard/" class="dropdown-item">Dashboard</a>
+</li>
+                                    
+<li>
+    <a href="../features/" class="dropdown-item">Features</a>
+</li>
+                                    
+<li>
+    <a href="../modeling/" class="dropdown-item">Modeling</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Literature Review</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../Why%20this%20matters/" class="dropdown-item">Why this matters</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Eligibility</a>
+</li>
+                                    
+<li>
+    <a href="../user_personas/" class="dropdown-item">User Personas</a>
+</li>
+                                    
+<li>
+    <a href="../faqs/" class="dropdown-item">FAQs</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../about/" class="nav-link">About</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../Why%20this%20matters/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../user_personas/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/AlphonseBrandon/blood_donation_campaign_dashboard/edit/master/docs/Eligibility.md" class="nav-link"><i class="fa-brands fa-github"></i> Edit on GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#ethical-guidelines-for-handling-donor-data" class="nav-link">Ethical Guidelines for Handling Donor Data</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#1-ethical-principles-for-donor-data-management" class="nav-link">1. Ethical Principles for Donor Data Management</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#2-legal-ethical-compliance" class="nav-link">2. Legal &amp; Ethical Compliance</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#3-safeguards-for-protecting-sensitive-donor-data" class="nav-link">3. Safeguards for Protecting Sensitive Donor Data</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#4-ethical-use-of-ai-donor-matching" class="nav-link">4. Ethical Use of AI &amp; Donor Matching</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#5-data-breach-prevention-incident-response" class="nav-link">5. Data Breach Prevention &amp; Incident Response</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#6-donor-rights-ethical-engagement" class="nav-link">6. Donor Rights &amp; Ethical Engagement</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="ethical-guidelines-for-handling-donor-data">Ethical Guidelines for Handling Donor Data</h1>
+<p>The <em>Blood Donation Campaign Dashboard</em> processes highly sensitive donor information, including personal identifiers, health records, and donation history. To ensure compliance with <em>medical ethics, global legal regulations, and donor rights</em>, this document outlines ethical guidelines and necessary safeguards for handling donor data.  </p>
+<p>These guidelines align with:<br />
+- <strong><a href="https://gdpr.eu/">General Data Protection Regulation (GDPR)</a></strong> – Ensuring data protection and donor rights.<br />
+- <strong><a href="https://www.hhs.gov/hipaa/index.html">Health Insurance Portability and Accountability Act (HIPAA)</a></strong> – Protecting medical data in the U.S.<br />
+- <strong><a href="https://www.who.int/publications/i/item/9789241547885">WHO Blood Donation Guidelines</a></strong> – Ethical standards for donor engagement and data security.  </p>
+<hr />
+<h2 id="1-ethical-principles-for-donor-data-management">1. Ethical Principles for Donor Data Management</h2>
+<h3 id="11-informed-consent-transparency">1.1 <em>Informed Consent &amp; Transparency</em></h3>
+<ul>
+<li>Donors must provide <em>explicit consent</em> before their data is collected, stored, or shared.  </li>
+<li>Information about <em>data usage, storage duration, and sharing practices</em> must be clearly communicated to donors.  </li>
+<li>Donors should have the <em>right to review, modify, or withdraw their consent</em> at any time.  </li>
+</ul>
+<p><em>Recommended Safeguards:</em><br />
+- Implement a <em>digital consent system</em> allowing donors to manage their privacy preferences.<br />
+- Provide a <em>clear privacy policy</em> with accessible summaries at donation centers and online platforms.  </p>
+<hr />
+<h3 id="12-privacy-confidentiality">1.2 <em>Privacy &amp; Confidentiality</em></h3>
+<ul>
+<li>Donor data should only be <em>accessible to authorized personnel</em> and must not be shared beyond its intended purpose.  </li>
+<li>Personal details should not be used for <em>non-medical purposes, including marketing or fundraising efforts</em>.  </li>
+<li>Reports and public health analytics must use <em>anonymized or aggregated data</em> to prevent donor identification.  </li>
+</ul>
+<p><em>Recommended Safeguards:</em><br />
+- Implement <em>Role-Based Access Control (RBAC)</em> to ensure only authorized personnel can access donor records.<br />
+- Use <em>data-sharing agreements (DSAs)</em> when collaborating with external organizations to define permitted uses.  </p>
+<hr />
+<h3 id="13-data-minimization-purpose-limitation">1.3 <em>Data Minimization &amp; Purpose Limitation</em></h3>
+<ul>
+<li>Collect only the <em>necessary information</em> required for donation eligibility, scheduling, and follow-up.  </li>
+<li>Avoid excessive or <em>irrelevant data collection</em> that does not contribute to donor safety or operational efficiency.  </li>
+<li>Establish a <em>clear data retention policy</em>, defining how long donor records are stored before deletion.  </li>
+</ul>
+<p><em>Recommended Safeguards:</em><br />
+- Separate personally identifiable information (<em>PII) from </em><em>medical history and donation records</em>.<br />
+- Implement <em>automated data deletion</em> for inactive donor records after a predefined retention period.  </p>
+<hr />
+<h2 id="2-legal-ethical-compliance">2. Legal &amp; Ethical Compliance</h2>
+<p>To ensure donor data protection, organizations must comply with:  </p>
+<ul>
+<li><strong><a href="https://gdpr.eu/">General Data Protection Regulation (GDPR)</a></strong> – Data protection rules for organizations operating within the European Union.  </li>
+<li><strong><a href="https://www.hhs.gov/hipaa/index.html">Health Insurance Portability and Accountability Act (HIPAA)</a></strong> – U.S. regulations governing the handling of sensitive health information.  </li>
+<li><strong><a href="https://www.who.int/publications/i/item/9789241547885">WHO Blood Donation Guidelines</a></strong> – Standards for ethical donor recruitment, engagement, and data security.  </li>
+</ul>
+<p><em>Recommended Safeguards:</em><br />
+- Conduct <em>regular compliance audits</em> to ensure alignment with international and national regulations.<br />
+- Appoint a <em>Data Protection Officer (DPO)</em> for oversight of data security and privacy policies.  </p>
+<hr />
+<h2 id="3-safeguards-for-protecting-sensitive-donor-data">3. Safeguards for Protecting Sensitive Donor Data</h2>
+<h3 id="31-data-anonymization-pseudonymization">3.1 <em>Data Anonymization &amp; Pseudonymization</em></h3>
+<ul>
+<li>When sharing donor data for research, statistical analysis, or reporting, all personally identifiable details should be <em>removed or anonymized</em>.  </li>
+<li>If anonymization is not possible, apply <em>pseudonymization</em> techniques such as replacing names with unique donor IDs.  </li>
+</ul>
+<p><em>Recommended Safeguards:</em><br />
+- Implement <em>automated anonymization tools</em> before exporting donor data for analysis.<br />
+- Ensure <em>re-identification risks are assessed</em> before data is shared with third parties.  </p>
+<hr />
+<h3 id="32-access-control-security-measures">3.2 <em>Access Control &amp; Security Measures</em></h3>
+<ul>
+<li>Access to donor data must be <em>restricted to individuals with legitimate authorization</em> based on their role.  </li>
+<li>All systems storing donor information should require <em>multi-factor authentication (MFA)</em>.  </li>
+<li>A <em>detailed audit log</em> must be maintained to track data access and modifications.  </li>
+</ul>
+<p><em>Recommended Safeguards:</em><br />
+- Use <em>secure hospital-grade cloud storage solutions</em> instead of local or unencrypted storage.<br />
+- Conduct <em>regular user access reviews</em> to prevent unauthorized access.  </p>
+<hr />
+<h3 id="33-secure-data-sharing-third-party-restrictions">3.3 <em>Secure Data Sharing &amp; Third-Party Restrictions</em></h3>
+<ul>
+<li>Donor data should only be shared for <em>medical, research, or regulatory purposes</em>, and only when legally permitted.  </li>
+<li>All third parties handling donor data must adhere to <em>strict confidentiality agreements</em>.  </li>
+<li>Personal donor details should never be shared with <em>marketing agencies, insurance companies, or commercial entities</em>.  </li>
+</ul>
+<p><em>Recommended Safeguards:</em><br />
+- Require <em>Data Sharing Agreements (DSAs)</em> before allowing external access to donor data.<br />
+- Use <em>tokenized access</em> that allows third parties to work with donor data without directly handling personal identifiers.  </p>
+<hr />
+<h2 id="4-ethical-use-of-ai-donor-matching">4. Ethical Use of AI &amp; Donor Matching</h2>
+<p>If AI-driven analytics are used for <em>donor retention, donation trends, or matching donors to hospitals</em>, the following ethical guidelines must be observed:  </p>
+<h3 id="41-transparency-explainability">4.1 <em>Transparency &amp; Explainability</em></h3>
+<ul>
+<li>AI-based recommendations should be <em>explainable and auditable</em>, ensuring clarity on how decisions are made.  </li>
+<li>Donors must be <em>informed if AI algorithms are influencing their eligibility or follow-up recommendations</em>.  </li>
+</ul>
+<h3 id="42-bias-prevention-fairness">4.2 <em>Bias Prevention &amp; Fairness</em></h3>
+<ul>
+<li>AI models must be tested to <em>prevent biases that could unfairly exclude certain demographics</em>.  </li>
+<li>Donor selection and eligibility should be <em>based on medical criteria</em>, not AI-driven risk assessments.  </li>
+</ul>
+<p><em>Recommended Safeguards:</em><br />
+- Perform <em>regular AI audits</em> to detect and correct potential biases.<br />
+- Ensure <em>human oversight</em> in AI-generated recommendations.  </p>
+<hr />
+<h2 id="5-data-breach-prevention-incident-response">5. Data Breach Prevention &amp; Incident Response</h2>
+<h3 id="51-proactive-security-measures">5.1 <em>Proactive Security Measures</em></h3>
+<ul>
+<li>Donor databases must use <em>strong encryption standards</em> for data storage and transmission.  </li>
+<li>Routine <em>penetration testing</em> should be conducted to identify security vulnerabilities.  </li>
+<li><em>Intrusion detection systems (IDS)</em> should be implemented to monitor for unauthorized access.  </li>
+</ul>
+<p><em>Recommended Safeguards:</em><br />
+- Maintain <em>offline encrypted backups</em> in case of cyberattacks.<br />
+- Require <em>real-time security monitoring</em> for suspicious activity detection.  </p>
+<hr />
+<h3 id="52-breach-response-donor-notification">5.2 <em>Breach Response &amp; Donor Notification</em></h3>
+<ul>
+<li>In the event of a data breach, affected donors should be <em>notified immediately</em>.  </li>
+<li>Organizations must conduct a <em>thorough impact assessment</em> and report breaches to regulatory bodies where applicable.  </li>
+<li>Affected individuals should receive guidance on <em>mitigating risks from exposed personal data</em>.  </li>
+</ul>
+<p><em>Recommended Safeguards:</em><br />
+- Implement an <em>incident response plan</em> outlining breach handling procedures.<br />
+- Establish a <em>secure donor communication channel</em> for emergency notifications.  </p>
+<hr />
+<h2 id="6-donor-rights-ethical-engagement">6. Donor Rights &amp; Ethical Engagement</h2>
+<h3 id="61-right-to-access-modify-data">6.1 <em>Right to Access &amp; Modify Data</em></h3>
+<ul>
+<li>Donors should be able to <em>view and update their personal information</em> securely.  </li>
+<li>A self-service portal should allow donors to <em>adjust their privacy settings</em>.  </li>
+</ul>
+<h3 id="62-right-to-withdraw-data-deletion">6.2 <em>Right to Withdraw &amp; Data Deletion</em></h3>
+<ul>
+<li>Donors must have the right to <em>request data deletion</em> upon withdrawal of consent.  </li>
+<li>Organizations should define <em>clear data retention timelines</em> and enforce automatic deletions when appropriate.  </li>
+</ul>
+<p><em>Recommended Safeguards:</em><br />
+- Implement a <em>user-friendly donor dashboard</em> for privacy control.<br />
+- Ensure compliance with <em>“right to be forgotten” provisions</em> under GDPR.  </p>
+<hr /></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
