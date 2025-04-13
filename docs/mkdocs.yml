@@ -24,6 +24,8 @@ nav:
 
   - Technical Documentation:
     - Dashboard: dashboard.md
+    - Data Preprocessing: data-preprocessing.md
+    - Data Preparation: data-preparation.md
     - Features: features.md
     - Modeling: modeling.md
   - Literature Review:
