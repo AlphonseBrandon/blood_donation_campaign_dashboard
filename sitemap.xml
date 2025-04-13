@@ -2,46 +2,54 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://AlphonseBrandon.github.io/blood_donation_campaign_dashboard/</loc>
-         <lastmod>2025-04-09</lastmod>
+         <lastmod>2025-04-13</lastmod>
     </url>
     <url>
          <loc>https://AlphonseBrandon.github.io/blood_donation_campaign_dashboard/Eligibility/</loc>
-         <lastmod>2025-04-09</lastmod>
+         <lastmod>2025-04-13</lastmod>
     </url>
     <url>
          <loc>https://AlphonseBrandon.github.io/blood_donation_campaign_dashboard/Eligibilty/</loc>
-         <lastmod>2025-04-09</lastmod>
+         <lastmod>2025-04-13</lastmod>
     </url>
     <url>
          <loc>https://AlphonseBrandon.github.io/blood_donation_campaign_dashboard/Why%20this%20matters/</loc>
-         <lastmod>2025-04-09</lastmod>
+         <lastmod>2025-04-13</lastmod>
     </url>
     <url>
          <loc>https://AlphonseBrandon.github.io/blood_donation_campaign_dashboard/about/</loc>
-         <lastmod>2025-04-09</lastmod>
+         <lastmod>2025-04-13</lastmod>
     </url>
     <url>
          <loc>https://AlphonseBrandon.github.io/blood_donation_campaign_dashboard/dashboard/</loc>
-         <lastmod>2025-04-09</lastmod>
+         <lastmod>2025-04-13</lastmod>
+    </url>
+    <url>
+         <loc>https://AlphonseBrandon.github.io/blood_donation_campaign_dashboard/data-preparation/</loc>
+         <lastmod>2025-04-13</lastmod>
+    </url>
+    <url>
+         <loc>https://AlphonseBrandon.github.io/blood_donation_campaign_dashboard/data-preprocessing/</loc>
+         <lastmod>2025-04-13</lastmod>
     </url>
     <url>
          <loc>https://AlphonseBrandon.github.io/blood_donation_campaign_dashboard/faq/</loc>
-         <lastmod>2025-04-09</lastmod>
+         <lastmod>2025-04-13</lastmod>
     </url>
     <url>
          <loc>https://AlphonseBrandon.github.io/blood_donation_campaign_dashboard/features/</loc>
-         <lastmod>2025-04-09</lastmod>
+         <lastmod>2025-04-13</lastmod>
     </url>
     <url>
          <loc>https://AlphonseBrandon.github.io/blood_donation_campaign_dashboard/getting-started/</loc>
-         <lastmod>2025-04-09</lastmod>
+         <lastmod>2025-04-13</lastmod>
     </url>
     <url>
          <loc>https://AlphonseBrandon.github.io/blood_donation_campaign_dashboard/modeling/</loc>
-         <lastmod>2025-04-09</lastmod>
+         <lastmod>2025-04-13</lastmod>
     </url>
     <url>
          <loc>https://AlphonseBrandon.github.io/blood_donation_campaign_dashboard/user_personas/</loc>
-         <lastmod>2025-04-09</lastmod>
+         <lastmod>2025-04-13</lastmod>
     </url>
 </urlset>
